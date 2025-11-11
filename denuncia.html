@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canal de Denúncias - Portal CA</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Portal do Centro Acadêmico (CA)</h1>
+        <nav>
+            <a href="index.html">Notícias</a>
+            <a href="calendario.html">Calendário</a>
+            <a href="denuncia.html">Denúncias</a>
+            <a href="login.html" class="btn-admin">Login</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="denuncia-form">
+            <h2>Canal de Denúncias Anônimo</h2>
+            <p>Este formulário é 100% anônimo. Não coletamos seu nome, e-mail ou IP. Sinta-se seguro para reportar.</p>
+            
+            <form id="form-denuncia">
+                <div class="form-group">
+                    <label for="tipo">Tipo de Reporte</label>
+                    <input type="text" id="tipo" required placeholder="Ex: Assédio, Problema de infraestrutura, etc.">
+                </div>
+                <div class="form-group">
+                    <label for="descricao">Descrição Detalhada</label>
+                    <textarea id="descricao" rows="10" required placeholder="Descreva o que aconteceu, onde, quando, e quem estava envolvido (se souber)."></textarea>
+                </div>
+                <button type="submit">Enviar Denúncia Anônima</button>
+            </form>
+
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 - Centro Acadêmico</p>
+    </footer>
+
+    <script type="module" src="./js/denuncia.js"></script>
+</body>
+</html>

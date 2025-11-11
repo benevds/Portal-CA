@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendário - Portal CA</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+</head>
+<body>
+
+    <header>
+        <h1>Portal do Centro Acadêmico (CA)</h1>
+        <nav>
+            <a href="index.html">Notícias</a>
+            <a href="calendario.html">Calendário</a>
+            <a href="denuncia.html">Denúncias</a>
+            <a href="login.html" class="btn-admin">Login</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="calendario-section">
+            <h2>Calendário de Eventos</h2>
+            <p>Clique em um dia para ver os eventos programados.</p>
+            <br>
+            <div id="calendar-container"></div> </section>
+    </main>
+
+    <footer>
+        <p>© 2025 - Centro Acadêmico</p>
+    </footer>
+
+    <script type="module" src="./js/calendario.js"></script>
+</body>
+</html>
