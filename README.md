@@ -1,128 +1,91 @@
-🚀 Portal do Centro Acadêmico (CA) 🚀
+# 🚀 Portal do Centro Acadêmico (CA)
 
-Este não é apenas um site, é uma plataforma web completa e "alto nível" de comunicação e gerenciamento, construída com uma arquitetura moderna (Jamstack/BaaS) para o Centro Acadêmico.
+Plataforma web completa para comunicação e gestão do Centro Acadêmico.
+Arquitetura moderna. Painel seguro. Fluxos claros. Tudo em
+Jamstack/BaaS.
 
-O projeto abandona a comunicação informal e caótica do WhatsApp e a centraliza em um portal dinâmico, responsivo e com um painel de controle 100% funcional para a gestão do CA.
+Site ao vivo: https://portal-ca-omega.vercel.app/
 
-[COLOQUE AQUI UM SCREENSHOT "BABADO" DO SEU HEADER ROXO COM AS PARTÍCULAS EM AÇÃO!]
+Para testar o painel, clique em **Login Adm** no site. As credenciais
+estão no final.
 
-▶️ Acesso Rápido (Live Demo)
+------------------------------------------------------------------------
 
-O projeto está 100% funcional e no ar, hospedado no Vercel.
+## 1. ✨ Funcionalidades
 
-Site Ao Vivo: https://portal-ca-omega.vercel.app/
+O sistema tem duas áreas: Público e Admin.
 
-Para testar o painel de gerenciamento, clique em "Login Adm" no site. As credenciais de teste para a apresentação estão no final deste documento (Seção 5).
+### 🏛️ Área Pública
 
-1. ✨ Funcionalidades de Luxo (O que foi feito)
+Interface responsiva. Acesso rápido às informações.
 
-O projeto é dividido em duas áreas principais: a Área Pública (para os alunos) e o Painel de Admin (para a gestão).
+-   **Notícias:** Lista atualizada em tempo real.
+-   **Calendário:** FullCalendar com eventos do Supabase.
+-   **Documentos:** Repositório para PDFs e arquivos oficiais.
+-   **Denúncias:** Envio anônimo. Sem coleta de IP. Apenas INSERT
+    autorizado.
 
-🏛️ Área Pública (O Site "Abado")
+### 🔒 Painel Admin
 
-A interface pública é 100% responsiva (funciona em celular) e conta com uma navegação "abada" (multi-página) profissional.
+SPA protegida. Acesso via login.
 
-✅ Header Dinâmico "High-Tech": O "desenho foda" que você pediu. Usamos a biblioteca tsParticles para criar um fundo de partículas de rede animadas que reagem ao mouse, dando uma vibe "tech" e "alto nível".
+-   **Login seguro:** Sessão controlada pelo Supabase Auth.
+-   **CRUD Notícias:** Criar, editar e excluir.
+-   **CRUD Eventos:** Controle total do calendário.
+-   **CRUD Documentos:** Upload seguro via Supabase Storage.
+-   **Denúncias:** Caixa privada para leitura e exclusão.
 
-✅ Página de Notícias (index.html): O mural principal, que lê e exibe em tempo real as notícias cadastradas no banco de dados.
+------------------------------------------------------------------------
 
-✅ Página de Calendário (calendario.html): O calendário "foda". Usamos a FullCalendar.io para exibir um calendário completo que puxa os eventos direto do Supabase.
+## 2. 🛠️ Arquitetura
 
-✅ Página de Documentos (documentos.html): Um repositório onde os alunos podem visualizar e baixar arquivos (PDFs, editais, atas) que a gestão do CA publicou.
+Stack moderna e simples.
 
-✅ Página de Denúncias (denuncia.html): Um canal 100% anônimo para os alunos enviarem denúncias ou sugestões. O sistema não coleta IP, e-mail ou nome, garantindo sigilo total (a RLS só permite INSERT).
+**Frontend:**\
+HTML5\
+CSS3 (Flexbox e Grid)\
+JavaScript (ES Modules)
 
-🔒 Painel de Admin Seguro (admin.html)
+**Backend (BaaS):** Supabase\
+**Banco:** PostgreSQL\
+**Auth:** Supabase Auth\
+**Storage:** Supabase Storage\
+**Segurança:** Row Level Security (RLS)
 
-Esta é a área mais complexa do projeto. É uma "Single Page Application" (SPA) protegida.
+Regras: - Público: apenas SELECT nas tabelas e INSERT em denúncias. -
+Admin: acesso total.
 
-✅ Rota de Login Protegida: O admin acessa pelo login.html. Se o login for válido, ele é redirecionado para o admin.html. Se você tentar acessar admin.html sem estar logado, o script de segurança te "chuta" de volta para o login.
+**Hospedagem:** Vercel (Deploy Contínuo com GitHub)
 
-✅ CRUD Completo de Notícias: O admin pode Criar, Ler, Editar e Excluir notícias.
+------------------------------------------------------------------------
 
-✅ CRUD Completo de Eventos: O admin pode Criar, Ler, Editar e Excluir eventos (que aparecem no calendário).
+## 3. 📁 Estrutura do Projeto
 
-✅ CRUD Completo de Documentos: O admin pode fazer Upload de arquivos (PDFs, etc.), Ler e Excluir. O upload é feito com segurança usando o Supabase Storage.
+/PORTAL-CA ├── admin.html ├── calendario.html ├── denuncia.html ├──
+documentos.html ├── index.html ├── login.html ├── README.md ├──
+style.css └── js/ ├── admin.js ├── calendario.js ├── denuncia.js ├──
+documentos.js ├── login.js ├── particles-config.js ├── script.js └──
+supabaseClient.js
 
-✅ Visualizador de Denúncias: Uma "caixa de entrada" segura onde o admin (e somente o admin) pode ler e excluir as denúncias anônimas enviadas pelo público.
+------------------------------------------------------------------------
 
-2. 🛠️ Arquitetura e Tecnologias
+## 4. ⚙️ Como Rodar Localmente
 
-Este projeto foi construído com uma stack moderna, abandonando o PHP/MySQL (citado no Documento de Visão) em favor de uma arquitetura BaaS (Backend-as-a-Service) muito mais rápida e segura.
+1.  Clone o repositório.\
+2.  Crie um projeto no Supabase.\
+3.  No SQL Editor, rode os scripts das tabelas e das regras RLS.\
+4.  Vá em **Project Settings \> API** e copie:
+    -   URL do projeto\
+    -   Chave `anon`\
+5.  Cole os valores em `js/supabaseClient.js`.\
+6.  Abra no VS Code e execute com Live Server.
 
-Frontend: HTML5, CSS3 (Responsivo com Flexbox/Grid), JavaScript (ES Modules).
+------------------------------------------------------------------------
 
-Backend (BaaS): Supabase
+## 5. 🔑 Acesso Admin (somente para apresentação)
 
-Banco de Dados: Supabase DB (PostgreSQL).
+**Email:** alevides@gmail.com\
+**Senha:** 123456
 
-Autenticação: Supabase Auth (cuida do login e da sessão do admin).
-
-Storage de Arquivos: Supabase Storage (cuida do upload dos documentos).
-
-Segurança: A mágica do projeto. A segurança não está no código, mas no banco. Usamos Row Level Security (RLS) do Supabase para criar regras que dizem:
-
-O público (anon) só pode LER (Select) notícias/eventos/documentos.
-
-O público (anon) só pode CRIAR (Insert) denúncias.
-
-O admin (authenticated) pode fazer TUDO (Select, Insert, Update, Delete) em todas as tabelas.
-
-Hospedagem: Vercel (com Deploy Contínuo integrado ao GitHub).
-
-3. 📁 Estrutura de Pastas
-
-A estrutura foi organizada para ser limpa e profissional, baseada no seu VS Code:
-
-/PORTAL-CA
-├── 📄 admin.html           (O Painel de Admin - 4 seções de CRUD)
-├── 📄 calendario.html       (Página pública do Calendário)
-├── 📄 denuncia.html         (Página pública de Denúncias)
-├── 📄 documentos.html        (Página pública de Documentos)
-├── 📄 index.html            (Página Principal - Notícias)
-├── 📄 login.html            (Página de Login do Admin)
-├── 📄 README.md             (Este arquivo "babado")
-├── 📄 style.css             (Folha de Estilo principal, roxa e responsiva)
-│
-└── 📁 js/                   (Pasta de scripts JavaScript)
-    ├── 📄 admin.js          (Lógica GIGANTE do painel de admin - 4 CRUDs)
-    ├── 📄 calendario.js     (Lógica do FullCalendar)
-    ├── 📄 denuncia.js       (Lógica de envio de denúncia)
-    ├── 📄 documentos.js     (Lógica de listagem de documentos)
-    ├── 📄 login.js          (Lógica de autenticação)
-    ├── 📄 particles-config.js (Configuração do "desenho foda")
-    ├── 📄 script.js         (Lógica da página principal - Notícias)
-    └── 📄 supabaseClient.js (O "coração" - Conexão centralizada)
-
-
-4. ⚙️ Como Rodar o Projeto Localmente
-
-Clone este repositório.
-
-Crie o Backend no Supabase:
-
-Crie uma conta gratuita no Supabase e crie um novo projeto.
-
-Vá em SQL Editor e rode os scripts SQL que usamos para criar as tabelas (noticias, eventos, documentos, denuncias) e as regras de segurança (RLS).
-
-Configure as Chaves:
-
-No Supabase, vá em Project Settings > API.
-
-Copie sua URL e sua chave anon (public key).
-
-Cole essas duas chaves no arquivo js/supabaseClient.js.
-
-Execute:
-
-Abra o projeto no VS Code e use a extensão Live Server para rodar o index.html.
-
-5. ⚠️⚠️⚠️ ACESSO DE ADMIN (PARA APRESENTAÇÃO) ⚠️⚠️⚠️
-
-Aqui estão as credenciais de acesso ao painel login.html para fins de teste e apresentação.
-
-MUITO IMPORTANTE: Estes dados estão aqui APENAS para a avaliação do projeto. Em um projeto real, você NUNCA deve subir senhas para um repositório! A segurança do banco está na RLS, mas a segurança da conta do admin deve ser protegida.
-
-Email: alevides@gmail.com
-
-Senha: 123456
+*Observação:* As credenciais servem apenas para a avaliação. Em
+produção, nunca suba senhas no repositório.
