@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - Portal CA</title>
+    <link rel="stylesheet" href="style.css">
+
+    </head>
+<body>
+    <header>
+        <h1>Painel Administrativo</h1>
+        <nav>
+            <button id="btn-logout">Sair (Logout)</button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="admin-form">
+            <h2>Cadastrar Nova Notícia</h2>
+            
+            <form id="form-nova-noticia">
+                <div class="form-group">
+                    <label for="titulo">Título</label>
+                    <input type="text" id="titulo" required>
+                </div>
+                <div class="form-group">
+                    <label for="data">Data</label>
+                    <input type="date" id="data" required>
+                </div>
+                <div class="form-group">
+                    <label for="resumo">Resumo (Texto)</label>
+                    <textarea id="resumo" rows="4" required></textarea>
+                </div>
+                <button type="submit">Salvar Notícia</button>
+            </form>
+            <p id="success-message" style="color: green;"></p>
+        </section>
+
+        <hr>
+
+        <section id="admin-list">
+            <h2>Gerenciar Notícias</h2>
+            <div id="lista-noticias-admin">
+                <p>Carregando...</p>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="./js/admin.js"></script>
+</body>
+</html>
