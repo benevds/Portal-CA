@@ -3,35 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendário - Portal CA</title>
+    <title>Documentos - Portal CA</title>
     <link rel="stylesheet" href="style.css">
-    
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
 </head>
 <body>
 
+    <!-- O MESMO HEADER PROFISSIONAL -->
     <header>
         <h1>Portal do Centro Acadêmico (CA)</h1>
         <nav>
             <a href="index.html">Notícias</a>
             <a href="calendario.html">Calendário</a>
             <a href="denuncia.html">Denúncias</a>
+            <a href="documentos.html">Documentos</a> <!-- Link novo -->
             <a href="login.html" class="btn-admin">Login Adm</a>
         </nav>
     </header>
 
     <main>
-        <section id="calendario-section">
-            <h2>Calendário de Eventos</h2>
-            <p>Clique em um dia para ver os eventos programados.</p>
+        <section id="documentos-lista">
+            <h2>Documentos Oficiais e Materiais</h2>
+            <p>Acesse aqui atas, editais, provas antigas e outros materiais de apoio.</p>
             <br>
-            <div id="calendar-container"></div> </section>
+            <div id="lista-de-documentos">
+                <!-- Documentos serão carregados aqui -->
+                <p>Carregando documentos...</p>
+            </div>
+        </section>
     </main>
 
     <footer>
         <p>© 2025 - Centro Acadêmico</p>
     </footer>
 
-    <script type="module" src="./js/calendario.js"></script>
+    <!-- Script para carregar os documentos -->
+    <script type="module" src="./js/documentos.js"></script>
 </body>
 </html>

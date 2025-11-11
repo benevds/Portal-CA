@@ -45,6 +45,80 @@
                 <p>Carregando...</p>
             </div>
         </section>
+
+        <hr style="margin: 40px 0;">
+
+        <section id="admin-eventos">
+            <h2>Cadastrar Novo Evento</h2>
+            
+            <form id="form-novo-evento">
+                <div class="form-group">
+                    <label for="evento-titulo">Título do Evento</label>
+                    <input type="text" id="evento-titulo" required>
+                </div>
+                <div class="form-group">
+                    <label for="evento-data">Data do Evento</label>
+                    <input type="date" id="evento-data" required>
+                </div>
+                <div class="form-group">
+                    <label for="evento-local">Local</label>
+                    <input type="text" id="evento-local" placeholder="Ex: Auditório, Laboratório 5, Online, etc.">
+                </div>
+                <button type="submit">Salvar Evento</button>
+            </form>
+            <p id="evento-success-message" style="color: green;"></p>
+        </section>
+
+        <section id="admin-list-eventos">
+            <h2>Gerenciar Eventos</h2>
+            <div id="lista-eventos-admin">
+                <p>Carregando...</p>
+            </div>
+        </section>
+
+        <hr style="margin: 40px 0;">
+
+        <section id="admin-documentos">
+            <h2>Cadastrar Novo Documento</h2>
+            <p>Faça upload de atas, editais, provas antigas, etc. (Somente PDF, DOCX, etc.)</p>
+            
+            <form id="form-novo-documento">
+                <div class="form-group">
+                    <label for="doc-titulo">Título do Documento</label>
+                    <input type="text" id="doc-titulo" required placeholder="Ex: Edital 001/2025, Prova de Cálculo 1">
+                </div>
+                <div class="form-group">
+                    <label for="doc-descricao">Descrição (Opcional)</label>
+                    <input type="text" id="doc-descricao" placeholder="Ex: Prova do professor X, ano 2024">
+                </div>
+                <div class="form-group">
+                    <label for="doc-arquivo">Arquivo</label>
+                    <input type="file" id="doc-arquivo" required>
+                </div>
+                <button type="submit">Salvar Documento</button>
+            </form>
+            <p id="doc-success-message" style="color: green;"></p>
+            <p id="doc-upload-status" style="color: #5a0fc8;"></p>
+        </section>
+
+        <section id="admin-list-documentos">
+            <h2>Gerenciar Documentos</h2>
+            <div id="lista-documentos-admin">
+                <p>Carregando...</p>
+            </div>
+        </section>
+
+        <hr style="margin: 40px 0;">
+
+        <section id="admin-denuncias">
+            <h2>Caixa de Denúncias Anônimas</h2>
+            <p>As denúncias mais recentes aparecem primeiro. Lembre-se de tratar esta informação com sigilo.</p>
+            
+            <div id="lista-denuncias-admin">
+                <p>Carregando denúncias...</p>
+            </div>
+        </section>
+
     </main>
 
     <script type="module" src="./js/admin.js"></script>
