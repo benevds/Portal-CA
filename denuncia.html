@@ -4,17 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Canal de Denúncias - Portal CA</title>
+
+    <!-- 1. SCRIPT DO "DESENHO FODA" (tsParticles) -->
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@3/tsparticles.bundle.min.js"></script>
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <header>
+        <!-- 2. O "QUADRO" ONDE AS PARTÍCULAS VÃO FICAR -->
+        <div id="particles-js"></div>
+
         <h1>Portal do Centro Acadêmico (CA)</h1>
         <nav>
             <a href="index.html">Notícias</a>
             <a href="calendario.html">Calendário</a>
             <a href="denuncia.html">Denúncias</a>
-
+            <a href="documentos.html">Documentos</a> <!-- Corrigido -->
             <a href="login.html" class="btn-admin">Login Adm</a>
         </nav>
     </header>
@@ -44,5 +51,8 @@
     </footer>
 
     <script type="module" src="./js/denuncia.js"></script>
+
+    <!-- 3. LIGA O "DESENHO FODA" -->
+    <script src="./js/particles-config.js"></script>
 </body>
 </html>

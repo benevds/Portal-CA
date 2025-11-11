@@ -191,3 +191,25 @@ button[type="submit"]:hover, .btn:hover {
     .admin-item div { margin-top: 10px; width: 100%; display: flex; gap: 10px; }
     .btn-editar, .btn-excluir { flex-grow: 1; }
 }
+
+
+header {
+    /* Isso é CRUCIAL para o fundo animado funcionar */
+    position: relative;
+    overflow: hidden; /* Impede que partículas "vazem" */
+}
+
+#particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0; /* Joga o "quadro" para TRÁS do texto */
+}
+
+header h1, header nav {
+    /* Isso é CRUCIAL para o texto ficar na FRENTE */
+    position: relative;
+    z-index: 1;
+}

@@ -4,11 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Admin Portal CA</title>
-    <link rel="stylesheet" href="style.css">
 
-    </head>
+    <!-- 1. SCRIPT DO "DESENHO FODA" (tsParticles) -->
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@3/tsparticles.bundle.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
     <header>
+        <!-- 2. O "QUADRO" ONDE AS PARTÍCULAS VÃO FICAR -->
+        <div id="particles-js"></div>
+
         <h1>Admin - Portal do CA</h1>
     </header>
 
@@ -33,5 +39,8 @@
     </main>
 
     <script type="module" src="./js/login.js"></script>
+
+    <!-- 3. LIGA O "DESENHO FODA" -->
+    <script src="./js/particles-config.js"></script>
 </body>
 </html>

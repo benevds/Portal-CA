@@ -4,37 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal do Centro Acadêmico</title>
-    <link rel="stylesheet" href="style.css">
+    
+    <!-- 1. SCRIPT DO "DESENHO FODA" (tsParticles) -->
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@3/tsparticles.bundle.min.js"></script>
 
-    </head>
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
     <header>
-    <h1>Portal do Centro Acadêmico (CA)</h1>
-    <nav>
-        <a href="index.html">Notícias</a>
-        <a href="calendario.html">Calendário</a>
-        <a href="denuncia.html">Denúncias</a>
+        <!-- 2. O "QUADRO" ONDE AS PARTÍCULAS VÃO FICAR -->
+        <div id="particles-js"></div>
 
-        <a href="login.html" class="btn-admin">Login Adm</a>
-    </nav>
-</header>
+        <h1>Portal do Centro Acadêmico (CA)</h1>
+        <nav>
+            <a href="index.html">Notícias</a>
+            <a href="calendario.html">Calendário</a>
+            <a href="denuncia.html">Denúncias</a>
+            <a href="documentos.html">Documentos</a>
+            <a href="login.html" class="btn-admin">Login Adm</a>
+        </nav>
+    </header>
 
     <main>
         <section id="noticias">
             <h2>Mural de Notícias</h2>
             <div id="mural-noticias">
-                </div>
-        </section>
-
-        <section id="eventos">
-            <h2>Agenda de Eventos</h2>
-            <div id="agenda-eventos">
-                </div>
-        </section>
-
-        <section id="documentos">
-            <h2>Documentos</h2>
-            <p>Em breve...</p>
+                <!-- Conteúdo será carregado pelo JS -->
+            </div>
         </section>
     </main>
 
@@ -42,6 +38,10 @@
         <p>© 2025 - Centro Acadêmico</p>
     </footer>
 
+    <!-- Script da página principal (SÓ notícias) -->
     <script type="module" src="./js/script.js"></script>
+
+    <!-- 3. LIGA O "DESENHO FODA" -->
+    <script src="./js/particles-config.js"></script>
 </body>
 </html>
