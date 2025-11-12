@@ -32,7 +32,7 @@ btnLogout.addEventListener('click', async () => {
         console.error('Erro ao sair:', error.message);
     } else {
         alert('Você saiu da sua conta.');
-        window.location.href = 'login.html';
+        window.location.href = 'index.html';
     }
 });
 
