@@ -3,45 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal do Centro Acadêmico</title>
+    <title>Portal do Centro Acadêmico de SI (UFOPA)</title>
     
-    <!-- 1. SCRIPT DO "DESENHO FODA" (tsParticles) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
+    
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@3/tsparticles.bundle.min.js"></script>
 
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <!-- 2. O "QUADRO" ONDE AS PARTÍCULAS VÃO FICAR -->
         <div id="particles-js"></div>
-
-        <h1>Portal do Centro Acadêmico (CA)</h1>
+        <h1>PORTAL CA-SI</h1>
         <nav>
-            <a href="index.html">Notícias</a>
-            <a href="calendario.html">Calendário</a>
-            <a href="denuncia.html">Denúncias</a>
-            <a href="documentos.html">Documentos</a>
+            <a href="#noticias">Notícias</a>
+            <a href="#calendario">Calendário</a>
+            <a href="#documentos">Documentos</a>
+            <a href="#projetos">Projetos</a>
+            <a href="#sobre">Sobre o CA</a>
             <a href="login.html" class="btn-admin">Login Adm</a>
         </nav>
     </header>
 
-    <main>
-        <section id="noticias">
-            <h2>Mural de Notícias</h2>
-            <div id="mural-noticias">
-                <!-- Conteúdo será carregado pelo JS -->
+    <main class="portal-grid">
+        
+        <div class="portal-feed">
+            
+            <section id="noticias" class="fade-in">
+                <h2>Mural de Notícias</h2>
+                <div id="mural-noticias"><p>Carregando...</p></div>
+            </section>
+
+            <section id="calendario" class="fade-in">
+                <h2>Calendário de Eventos</h2>
+                <div id="calendar-container"></div>
+            </section>
+
+            <section id="projetos" class="fade-in">
+                <h2>Projetos do Curso</h2>
+                <p>Conheça os projetos de pesquisa e extensão que os alunos de SI estão "babando"!</p>
+                <div class="projetos-grid">
+                    <div class="card-projeto">
+                        <h3>Projeto "Boto" IA</h3>
+                        <p>Uso de Inteligência Artificial para monitorar botos no Rio Amazonas.</p>
+                        <span>Responsável: Prof. Dr. X</span>
+                    </div>
+                    <div class="card-projeto">
+                        <h3>App "Saúde Ribeirinha"</h3>
+                        <p>Aplicativo mobile para conectar agentes de saúde e comunidades ribeirinhas.</p>
+                        <span>Responsável: Profa. Dra. Y</span>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="galeria" class="fade-in">
+                <h2>Galeria de Fotos</h2>
+                <div class="galeria-grid">
+                    <img src="https://via.placeholder.com/300x200?text=Semana+Acadêmica" alt="Foto 1">
+                    <img src="https://via.placeholder.com/300x200?text=Formatura+2024" alt="Foto 2">
+                    <img src="https://via.placeholder.com/300x200?text=Calourada" alt="Foto 3">
+                    <img src="https://via.placeholder.com/300x200?text=Evento+de+IA" alt="Foto 4">
+                </div>
+            </section>
+
+        </div>
+
+        <aside class="sidebar-portal">
+            
+            <div id="sobre" class="sidebar-widget fade-in">
+                <h3>Sobre o CA</h3>
+                <p>O Centro Acadêmico de Sistemas de Informação (CASI) é a entidade que representa todos os estudantes do curso na UFOPA.</p>
+                
+                <h4 style="margin-top: 15px; color: var(--cor-acento);">Equipe (Gestão 2025)</h4>
+                <div class="equipe-grid">
+                    <div class="equipe-membro">
+                        <img src="https://github.com/benevds.png" alt="Foto Alessandro">
+                        <strong>Alessandro Benevides</strong>
+                        <span>Presidente</span>
+                    </div>
+                    <div class="equipe-membro">
+                        <img src="https://via.placeholder.com/50" alt="Foto Membro 2">
+                        <strong>(Outro Membro)</strong>
+                        <span>Vice-Presidente</span>
+                    </div>
+                </div>
             </div>
-        </section>
+
+            <div id="documentos" class="sidebar-widget fade-in">
+                <h3>Documentos</h3>
+                <div id="lista-de-documentos"><p>Carregando...</p></div>
+            </div>
+
+            <div class="sidebar-widget fade-in">
+                <h3>Links Importantes</h3>
+                <ul class="links-importantes">
+                    <li><a href="httpsa://www.ufopa.edu.br/sigaa/" target="_blank">SIGAA (Portal do Aluno)</a></li>
+                    <li><a href="httpsa://www.ufopa.edu.br/proen/" target="_blank">PROEN (Editais)</a></li>
+                    <li><a href="httpsa://www.ufopa.edu.br/ici/" target="_blank">Site do ICI (Instituto)</a></li>
+                </ul>
+            </div>
+            
+            <div id="denuncia" class="sidebar-widget fade-in">
+                <h3>Canal de Denúncias</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 10px;">100% anônimo. Sua voz é importante.</p>
+                <form id="form-denuncia">
+                    <div class="form-group">
+                        <input type="text" id="tipo" required placeholder="Tipo (Ex: Assédio, Infraestrutura)">
+                    </div>
+                    <div class="form-group">
+                        <textarea id="descricao" rows="5" required placeholder="Descrição anônima..."></textarea>
+                    </div>
+                    <button type="submit" style="width: 100%;">Enviar Denúncia</button>
+                </form>
+            </div>
+
+        </aside>
     </main>
 
     <footer>
-        <p>© 2025 - Centro Acadêmico</p>
+        <div class="redes-sociais">
+            <a href="httpsa://www.instagram.com/seu-ca-aqui" target="_blank" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#" target="_blank" title="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+            <a href="#" target="_blank" title="Email"><i class="fa-solid fa-envelope"></i></a>
+        </div>
+        <p>© 2025 - Centro Acadêmico de Sistemas de Informação (UFOPA)</p>
     </footer>
 
-    <!-- Script da página principal (SÓ notícias) -->
     <script type="module" src="./js/script.js"></script>
 
-    <!-- 3. LIGA O "DESENHO FODA" -->
     <script src="./js/particles-config.js"></script>
 </body>
 </html>

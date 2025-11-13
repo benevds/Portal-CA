@@ -1,5 +1,20 @@
 /* =================================
-   Configurações Globais (Já com a "Vibe Tech")
+   1. VARIÁVEIS ("Babado" Tech)
+   ================================= */
+:root {
+    --cor-fundo: #0a0a0a;
+    --cor-fundo-card: #1a1a1a;
+    --cor-texto: #e0e0e0;
+    --cor-titulo: #ffffff;
+    --cor-acento: #39ff14; /* Verde-Limão "Tech" */
+    --cor-borda: #2a2a2a;
+    
+    --fonte-tech: 'Roboto Mono', 'Consolas', monospace; /* Fonte "Hacker" */
+    --fonte-principal: 'Inter', system-ui, sans-serif; /* Fonte limpa */
+}
+
+/* =================================
+   2. RESET E EFEITOS "SUAVES"
    ================================= */
 * {
     box-sizing: border-box;
@@ -7,209 +22,364 @@
     padding: 0;
 }
 
+/* A MÁGICA DA ROLAGEM "SUAVE" */
+html {
+    scroll-behavior: smooth;
+}
+
 body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    background-color: #f0f2f5; 
-    color: #333;
+    font-family: var(--fonte-principal);
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
     line-height: 1.6;
 }
 
-h1, h2, h3 {
-    font-weight: 700;
+/* A MÁGICA DO FADE-IN "SUAVE" */
+.fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+/* (O JS vai adicionar 'visible' quando rolar) */
+.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
-a {
-    color: #5a0fc8; /* O ROXO */
-    text-decoration: none;
-}
+img { max-width: 100%; height: auto; display: block; }
+h1, h2, h3, h4 { font-family: var(--fonte-tech); color: var(--cor-titulo); font-weight: 700; }
+a { color: var(--cor-acento); text-decoration: none; transition: color 0.3s ease; }
+a:hover { color: white; }
 
 /* =================================
-   Layout Principal
+   3. HEADER E NAVEGAÇÃO
    ================================= */
 header {
-    background: linear-gradient(135deg, #5a0fc8 0%, #3d11cb 100%);
-    color: white;
+    background-color: var(--cor-fundo-card);
+    border-bottom: 2px solid var(--cor-acento);
     padding: 20px 30px;
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; 
+    position: sticky; /* Menu Fixo no Topo! */
+    top: 0;
+    z-index: 1000;
 }
 
-header h1 {
-    margin: 0;
-    font-size: 2rem;
-}
-
-header nav {
-    margin-top: 10px;
-}
-
-header nav a, header nav button {
-    color: white;
-    text-decoration: none;
-    padding: 8px 15px;
-    font-weight: bold;
-    border-radius: 5px;
+header h1 { font-size: 1.5rem; color: var(--cor-acento); }
+header nav { display: flex; gap: 15px; flex-wrap: wrap; }
+header nav a {
+    color: var(--cor-titulo);
+    font-family: var(--fonte-tech);
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 4px;
     transition: background-color 0.3s ease;
-    border: none;
-    background: none;
-    cursor: pointer;
-    font-size: 1rem;
-    margin: 0 5px;
 }
+header nav a:hover { background-color: var(--cor-acento); color: var(--cor-fundo); }
+header nav a.btn-admin { border: 2px solid var(--cor-acento); }
+header nav a.btn-admin:hover { background-color: var(--cor-acento); color: var(--cor-fundo); }
 
-header nav a:hover, header nav button:hover {
-    background-color: rgba(255, 255, 255, 0.15);
-}
-
-/* Botão de Login do Admin no Header */
-header nav a.btn-admin {
-    background-color: rgba(255, 255, 255, 0.2);
-    border: 1px solid white;
-    border-radius: 5px;
-}
-header nav a.btn-admin:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-}
-
-main {
-    max-width: 1100px; 
+/* =================================
+   4. LAYOUT DO PORTAL (O "TUDÃO")
+   ================================= */
+main.portal-grid {
+    max-width: 1200px;
     margin: 30px auto;
     padding: 0 20px;
-    display: grid; 
-    gap: 20px;
+    display: grid;
+    grid-template-columns: 1fr; /* 1 coluna (Mobile-first) */
+    gap: 30px;
 }
 
-section {
-    background-color: white;
+@media (min-width: 900px) {
+    main.portal-grid {
+        grid-template-columns: 2.5fr 1fr; /* Notícias | Sidebar */
+    }
+}
+
+.portal-feed { display: flex; flex-direction: column; gap: 30px; }
+.sidebar-portal { display: flex; flex-direction: column; gap: 30px; }
+
+section, .sidebar-widget {
+    background-color: var(--cor-fundo-card);
     padding: 25px;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border: 1px solid var(--cor-borda);
 }
 
 h2 {
-    color: #5a0fc8;
-    border-bottom: 2px solid #f0f2f5;
+    color: var(--cor-acento);
+    border-bottom: 1px solid var(--cor-borda);
     padding-bottom: 10px;
     margin-bottom: 20px;
     font-size: 1.8rem;
 }
 
-footer {
-    text-align: center;
-    padding: 20px;
-    color: #777;
-    margin-top: 30px;
-}
-
 /* =================================
-   Formulários (Admin / Denúncia)
+   5. SEÇÕES DE CONTEÚDO
    ================================= */
-.form-group {
+
+/* Notícias */
+.card {
+    border: 1px solid var(--cor-borda);
+    border-radius: 5px;
+    padding: 20px;
+    background: var(--cor-fundo);
     margin-bottom: 15px;
 }
-.form-group label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 5px;
+.card h3 { color: var(--cor-acento); margin-bottom: 10px; }
+.card .data { font-size: 0.9rem; color: #888; margin-bottom: 15px; font-family: var(--fonte-tech); }
+
+/* Calendário */
+#calendar-container {
+    --fc-border-color: var(--cor-borda);
+    --fc-today-bg-color: rgba(57, 255, 20, 0.15); /* Verde neon suave */
+    --fc-button-bg-color: var(--cor-acento);
+    --fc-button-border-color: var(--cor-acento);
+    --fc-button-text-color: #000;
+    --fc-button-hover-bg-color: #fff;
+    --fc-button-hover-text-color: #000;
+    --fc-button-active-bg-color: #fff;
+    --fc-event-bg-color: var(--cor-acento);
+    --fc-event-border-color: var(--cor-acento);
+    --fc-event-text-color: #000;
 }
+#calendar-container a { color: var(--cor-texto); }
+
+/* Projetos */
+.projetos-grid { display: grid; grid-template-columns: 1fr; gap: 15px; }
+@media (min-width: 600px) { .projetos-grid { grid-template-columns: 1fr 1fr; } }
+.card-projeto {
+    background: var(--cor-fundo);
+    border: 1px solid var(--cor-borda);
+    padding: 20px;
+    border-radius: 5px;
+}
+.card-projeto h3 { color: var(--cor-acento); }
+.card-projeto span { font-size: 0.9rem; color: #888; }
+
+/* Galeria */
+.galeria-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+}
+.galeria-grid img {
+    border-radius: 4px;
+    border: 1px solid var(--cor-borda);
+    aspect-ratio: 1 / 1; 
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+.galeria-grid img:hover { transform: scale(1.05); }
+
+/* Sobre o CA (Equipe) */
+.equipe-grid { margin-top: 15px; }
+.equipe-membro {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.equipe-membro img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 2px solid var(--cor-acento);
+}
+.equipe-membro strong { color: var(--cor-titulo); }
+.equipe-membro span { font-size: 0.9rem; color: #888; }
+
+/* Documentos */
+.links-importantes li { list-style: none; margin-bottom: 10px; }
+.links-importantes li a { color: var(--cor-texto); font-weight: 500; }
+.links-importantes li a:hover { color: var(--cor-acento); text-decoration: underline; }
+#lista-de-documentos a { font-weight: 500; }
+#lista-de-documentos p { font-size: 0.9rem; color: #888; }
+
+/* Denúncia (Formulário) */
+.form-group { margin-bottom: 10px; }
 input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="date"],
 textarea {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
+    padding: 10px;
+    border: 1px solid var(--cor-borda);
     border-radius: 5px;
-    font-size: 1rem;
+    font-size: 0.9rem;
+    background: var(--cor-fundo);
+    color: var(--cor-texto);
 }
 button[type="submit"], .btn {
-    background: #5a0fc8;
-    color: white;
-    padding: 12px 20px;
+    background: var(--cor-acento);
+    color: var(--cor-fundo);
+    padding: 10px 15px;
     border: none;
     border-radius: 5px;
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: 0.9rem;
+    font-weight: 700;
+    font-family: var(--fonte-tech);
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: all 0.3s ease;
 }
 button[type="submit"]:hover, .btn:hover {
-    background: #4a0ca8;
-    transform: translateY(-2px);
+    background: white;
+    box-shadow: 0 0 10px var(--cor-acento);
 }
 
 /* =================================
-   Cards e Listas (Notícias)
+   6. FOOTER (Redes Sociais)
    ================================= */
-.card {
-    border: 1px solid #eee;
-    border-left: 5px solid #5a0fc8;
-    border-radius: 5px;
-    padding: 15px;
-    margin-bottom: 15px;
-    background: #fafafa;
+footer {
+    text-align: center;
+    padding: 40px 20px;
+    margin-top: 30px;
+    border-top: 1px solid var(--cor-borda);
+    background: var(--cor-fundo-card);
 }
-.card .data {
-    font-size: 0.9rem;
-    color: #777;
-    margin-bottom: 10px;
+.redes-sociais { margin-bottom: 20px; }
+.redes-sociais a { font-size: 2rem; margin: 0 15px; color: var(--cor-texto); }
+.redes-sociais a:hover { color: var(--cor-acento); }
+
+/* =================================
+   7. PAINEL ADMIN (Dashboard)
+   ================================= */
+/* (O CSS do Admin que fizemos antes) */
+/* ... cole o CSS do admin-layout aqui ... */
+.admin-sidebar { background: #111; }
+.sidebar-header { background: #000; border-bottom: 1px solid var(--cor-acento); }
+.sidebar-header h3 { color: var(--cor-acento); }
+.sidebar-nav .nav-link:hover { background: var(--cor-fundo-card); border-left-color: var(--cor-acento); }
+.sidebar-nav .nav-link.active { background: var(--cor-acento); color: #000; font-weight: 700; border-left-color: white; }
+.admin-content { background: var(--cor-fundo); }
+/* ... etc ... */
+
+/* =================================
+   9. CSS DO DASHBOARD "BABADO" (Admin)
+   ================================= */
+
+/* Esconde o Header e Footer normais na pág de admin */
+/* CORREÇÃO: Só aplica se o BODY tiver a classe 'admin-page' */
+body.admin-page > header, body.admin-page > footer {
+    display: none;
 }
-.admin-item {
-    padding: 15px 5px;
-    border-bottom: 1px solid #f0f2f5;
+
+/* O "abraço" do layout (sidebar + conteúdo) */
+.admin-layout {
     display: flex;
-    justify-content: space-between;
+    min-height: 100vh;
+}
+
+/* O Menu Lateral (Sidebar) */
+.admin-sidebar {
+    width: 250px;
+    background: #111; /* Mais escuro que o card */
+    color: white;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--cor-borda);
+}
+
+.sidebar-header {
+    padding: 20px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: #000;
+    border-bottom: 1px solid var(--cor-acento);
+}
+.sidebar-header h3 {
+    color: var(--cor-acento);
+}
+
+.sidebar-nav {
+    flex-grow: 1;
+}
+
+.sidebar-nav .nav-link {
+    display: flex;
     align-items: center;
-    gap: 15px;
-}
-.admin-item:last-child { border-bottom: none; }
-.btn-editar, .btn-excluir {
-    padding: 8px 12px;
-    margin-left: 5px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9rem;
+    color: #adb5bd; /* Cinza claro */
+    padding: 15px 20px;
+    text-decoration: none;
     font-weight: 500;
-    white-space: nowrap; 
-}
-.btn-editar { background-color: #3498db; color: white; }
-.btn-editar:hover { background-color: #2980b9; }
-.btn-excluir { background-color: #e74c3c; color: white; }
-.btn-excluir:hover { background-color: #c0392b; }
-
-/* =================================
-   RESPONSIVIDADE (A Mágica)
-   ================================= */
-@media (max-width: 768px) {
-    header h1 { font-size: 1.5rem; }
-    header nav { display: flex; flex-direction: column; gap: 5px; }
-    main { padding: 0 10px; margin-top: 20px; }
-    h2 { font-size: 1.5rem; }
-    .admin-item { flex-direction: column; align-items: flex-start; }
-    .admin-item div { margin-top: 10px; width: 100%; display: flex; gap: 10px; }
-    .btn-editar, .btn-excluir { flex-grow: 1; }
+    font-family: var(--fonte-tech);
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
 }
 
-
-header {
-    /* Isso é CRUCIAL para o fundo animado funcionar */
-    position: relative;
-    overflow: hidden; /* Impede que partículas "vazem" */
+.sidebar-nav .nav-link i {
+    margin-right: 15px; /* Ícone */
+    width: 20px;
 }
 
-#particles-js {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    z-index: 0; /* Joga o "quadro" para TRÁS do texto */
+.sidebar-nav .nav-link:hover {
+    background: var(--cor-fundo-card);
+    color: white;
+    border-left: 4px solid var(--cor-acento); /* O verde! */
 }
 
-header h1, header nav {
-    /* Isso é CRUCIAL para o texto ficar na FRENTE */
-    position: relative;
-    z-index: 1;
+/* O link ATIVO (a aba que estamos vendo) */
+.sidebar-nav .nav-link.active {
+    background: var(--cor-acento);
+    color: #000;
+    font-weight: 700;
+    border-left: 4px solid white;
+}
+
+/* Botão de Sair */
+#btn-logout.nav-link {
+    margin-top: auto; /* Joga ele pra baixo */
+    border-top: 1px solid var(--cor-borda);
+}
+#btn-logout.nav-link:hover {
+    background: #e74c3c; /* Vermelho no hover */
+    color: white;
+    border-left-color: #e74c3c;
+}
+
+/* A Área de Conteúdo (onde as abas aparecem) */
+.admin-content {
+    flex-grow: 1;
+    padding: 30px;
+    background: var(--cor-fundo);
+    max-width: calc(100% - 250px); /* Garante que não estoure */
+}
+
+/* A "mágica" das abas */
+.tab-pane {
+    display: none; /* Todas começam escondidas */
+}
+.tab-pane.active {
+    display: block; /* A ativa aparece */
+}
+
+/* Ajustes no CSS antigo para o novo layout */
+.admin-content section {
+    max-width: 900px; /* Limita a largura dos formulários */
+    margin: 0 auto 20px auto; /* Centraliza */
+}
+
+/* Corrigindo a lista de denúncias */
+#lista-denuncias-admin .admin-item {
+    border-left: 5px solid #e74c3c;
+    margin-top: 15px;
+    padding: 15px;
+    background: #111;
+}
+#lista-denuncias-admin strong {
+    font-size: 1.2rem;
+    color: #e74c3c;
+}
+#lista-denuncias-admin p {
+    white-space: pre-wrap; /* Mantém as quebras de linha */
+}
+#lista-denuncias-admin .btn-excluir-denuncia {
+    background-color: #e74c3c;
+    color: white;
+    padding: 8px 12px;
 }
