@@ -16,15 +16,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     console.log('Usuário logado:', session.user.email);
     
-    // AQUI! Carrega TODAS as seções
+    // Carrega TODAS as seções
     carregarNoticiasAdmin();
     carregarEventosAdmin();
     carregarDocumentosAdmin();
     carregarDenunciasAdmin();
-    carregarEquipeAdmin();
+    carregarEquipeAdmin(); 
 
-
+    // Liga a mágica das Abas
     setupTabs();
+
+    // A MÁGICA "ALTO NÍVEL": LIGA O EDITOR DE TEXTO
+    tinymce.init({
+        selector: 'textarea#resumo', // <== ACHA O SEU CAMPO DE RESUMO DE NOTÍCIAS
+        skin: "oxide-dark", // <== SKIN "TECH" PARA COMBINAR COM SEU SITE
+        content_css: "dark",
+        plugins: 'lists link autoresize',
+        toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | bullist numlist | link',
+        autoresize_bottom_margin: 20,
+        menubar: false,
+    });
 });
 
 
@@ -40,25 +51,18 @@ btnLogout.addEventListener('click', async () => {
     }
 });
 
-// --- PASSO NOVO: MÁGICA DAS ABAS DO DASHBOARD ---
+// --- PASSO 3: MÁGICA DAS ABAS DO DASHBOARD ---
 function setupTabs() {
     const navLinks = document.querySelectorAll('.sidebar-nav .nav-link');
     const tabPanes = document.querySelectorAll('.admin-content .tab-pane');
 
     navLinks.forEach(link => {
-        // Ignora o botão de logout
         if (link.id === 'btn-logout') return;
-
         link.addEventListener('click', (event) => {
-            event.preventDefault(); // Impede que o # mude a URL
-
+            event.preventDefault(); 
             const tabId = link.getAttribute('data-tab');
-
-            // 1. Desativa todas as abas e links
             tabPanes.forEach(pane => pane.classList.remove('active'));
             navLinks.forEach(nav => nav.classList.remove('active'));
-
-            // 2. Ativa a aba e o link corretos
             document.getElementById(tabId).classList.add('active');
             link.classList.add('active');
         });
@@ -69,9 +73,62 @@ function setupTabs() {
 /* =============================================
    =========== LÓGICA DO CRUD DE NOTÍCIAS ========
    ============================================= */
-// (O seu código de Notícias - apenas as funções resumidas)
+
+// --- CADASTRAR/ATUALIZAR NOTÍCIA (CORRIGIDO por você) ---
 const formNoticia = document.getElementById('form-nova-noticia');
 const successMessage = document.getElementById('success-message');
+
+formNoticia.addEventListener('submit', async (event) => {
+    event.preventDefault(); 
+
+    // Pega os valores do formulário
+    const titulo = document.getElementById('titulo').value;
+    const data = document.getElementById('data').value;
+    // O MAIS IMPORTANTE: Pega o resumo do editor TinyMCE
+    const editorInstance = tinymce.get('resumo');
+    const resumo = editorInstance ? editorInstance.getContent() : document.getElementById('resumo').value; // <== A CHECAGEM DE SEGURANÇA
+    
+    successMessage.textContent = ''; // Limpa mensagens
+
+    try {
+        let error;
+        if (currentEditingId) {
+            // ATUALIZANDO
+            const { error: updateError } = await _supabase
+                .from('noticias')
+                .update({ titulo: titulo, data: data, resumo: resumo })
+                .match({ id: currentEditingId });
+            error = updateError;
+        
+        } else {
+            // INSERINDO
+            const { error: insertError } = await _supabase
+                .from('noticias')
+                .insert([{ titulo: titulo, data: data, resumo: resumo }]);
+            error = insertError;
+        }
+
+        if (error) throw error; 
+
+        // Se deu certo: Reseta o estado
+        successMessage.textContent = 'Notícia salva com sucesso!';
+        formNoticia.reset(); 
+        
+        // Limpa o editor TinyMCE
+        if (editorInstance) {
+            editorInstance.setContent(''); 
+        }
+        
+        currentEditingId = null; 
+        carregarNoticiasAdmin(); 
+
+    } catch (error) {
+        console.error('Erro ao salvar notícia:', error.message);
+        alert('Erro ao salvar: ' + error.message);
+    }
+});
+
+// --- CARREGAR NOTÍCIAS (Função normal) ---
 async function carregarNoticiasAdmin() {
     const listaAdmin = document.getElementById('lista-noticias-admin');
     listaAdmin.innerHTML = '<p>Carregando notícias...</p>';
@@ -85,32 +142,12 @@ async function carregarNoticiasAdmin() {
         listaAdmin.appendChild(item);
     });
 }
-formNoticia.addEventListener('submit', async (event) => {
-    event.preventDefault(); 
-    const titulo = document.getElementById('titulo').value;
-    const data = document.getElementById('data').value;
-    const resumo = tinymce.get('resumo').getContent();
-    successMessage.textContent = ''; 
-    try {
-        let error;
-        if (currentEditingId) {
-            const { error: updateError } = await _supabase.from('noticias').update({ titulo: titulo, data: data, resumo: resumo }).match({ id: currentEditingId });
-            error = updateError;
-        } else {
-            const { error: insertError } = await _supabase.from('noticias').insert([{ titulo: titulo, data: data, resumo: resumo }]);
-            error = insertError;
-        }
-        if (error) throw error; 
-        successMessage.textContent = 'Notícia salva com sucesso!';
-        tinymce.get('resumo').setContent('');
-        currentEditingId = null; 
-        carregarNoticiasAdmin(); 
-    } catch (error) {
-        alert('Erro ao salvar: ' + error.message);
-    }
-});
+
+// --- EDITAR/EXCLUIR NOTÍCIA (CORRIGIDO por mim) ---
 const listaAdmin = document.getElementById('lista-noticias-admin');
 listaAdmin.addEventListener('click', async (event) => {
+    
+    // 1. Lógica de EXCLUIR (Notícia)
     if (event.target.classList.contains('btn-excluir')) {
         if (confirm('Tem certeza que quer excluir esta notícia?')) {
             const idParaExcluir = event.target.dataset.id;
@@ -121,18 +158,34 @@ listaAdmin.addEventListener('click', async (event) => {
             } catch (error) { alert('Erro ao excluir: ' + error.message); }
         }
     }
+
+    // 2. Lógica de EDITAR (Notícia) - CORRIGIDA
     if (event.target.classList.contains('btn-editar')) {
         const idParaEditar = event.target.dataset.id;
         try {
             const { data: noticia, error } = await _supabase.from('noticias').select('*').match({ id: idParaEditar }).single(); 
             if (error) throw error;
+
+            // --- CORREÇÃO "BABADA" AQUI ---
+            const editorInstance = tinymce.get('resumo');
             document.getElementById('titulo').value = noticia.titulo;
             document.getElementById('data').value = noticia.data;
-            tinymce.get('resumo').setContent(noticia.resumo || '');
+            
+            // CHECAGEM DE SEGURANÇA
+            if (editorInstance) {
+                editorInstance.setContent(noticia.resumo || '');
+            } else {
+                document.getElementById('resumo').value = noticia.resumo || '';
+            }
+            // --- FIM DA CORREÇÃO ---
+            
             currentEditingId = noticia.id;
             successMessage.textContent = `Editando notícia: "${noticia.titulo}"`;
             window.scrollTo(0, 0); 
-        } catch (error) { alert('Erro ao carregar dados para edição: ' + error.message); }
+        } catch (error) { 
+            console.error('Erro ao carregar dados para edição:', error);
+            alert('Erro ao carregar dados para edição: ' + error.message); 
+        }
     }
 });
 
@@ -140,7 +193,7 @@ listaAdmin.addEventListener('click', async (event) => {
 /* =============================================
    =========== LÓGICA DO CRUD DE EVENTOS =========
    ============================================= */
-// (O seu código de Eventos - apenas as funções resumidas)
+// (O seu código de Eventos - sem mudanças)
 let currentEventEditingId = null;
 const formEvento = document.getElementById('form-novo-evento');
 const successMessageEvento = document.getElementById('evento-success-message');
@@ -209,7 +262,7 @@ listaAdminEventos.addEventListener('click', async (event) => {
 /* =============================================
    =========== LÓGICA DO CRUD DE DOCUMENTOS ======
    ============================================= */
-// (O seu código de Documentos - apenas as funções resumidas)
+// (O seu código de Documentos - sem mudanças)
 const formDocumento = document.getElementById('form-novo-documento');
 const successMessageDoc = document.getElementById('doc-success-message');
 const uploadStatus = document.getElementById('doc-upload-status');
@@ -274,7 +327,7 @@ listaAdminDocumentos.addEventListener('click', async (event) => {
 /* =============================================
    =========== LÓGICA DE VER DENÚNCIAS =========
    ============================================= */
-// (O seu código de Denúncias - apenas as funções resumidas)
+// (O seu código de Denúncias - sem mudanças)
 const listaAdminDenuncias = document.getElementById('lista-denuncias-admin');
 async function carregarDenunciasAdmin() {
     listaAdminDenuncias.innerHTML = '<p>Carregando denúncias...</p>';
@@ -285,7 +338,6 @@ async function carregarDenunciasAdmin() {
     denuncias.forEach(denuncia => {
         const item = document.createElement('div');
         item.className = 'admin-item'; 
-        const dataEnvio = new Date(denuncia.created_at).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
         item.innerHTML = `<div><div style="display: flex; justify-content: space-between; align-items: center;"><strong style="font-size: 1.2rem; color: #e74c3c;">Tipo: ${denuncia.tipo}</strong><span style="font-size: 0.9rem; color: #888;">Enviado em: ${dataEnvio}</span></div><p style="margin-top: 10px; white-space: pre-wrap;">${denuncia.descricao}</p></div><div style="text-align: right; margin-top: 10px;"><button class="btn-excluir-denuncia" data-id="${denuncia.id}">Marcar como Resolvido (Excluir)</button></div>`;
         listaAdminDenuncias.appendChild(item);
     });
@@ -308,16 +360,12 @@ listaAdminDenuncias.addEventListener('click', async (event) => {
 /* =============================================
    =========== LÓGICA DA NOVA ABA "EQUIPE" =======
    ============================================= */
-
-// (Este é o único código 100% novo)
+// (O seu código da Equipe - sem mudanças)
 async function carregarEquipeAdmin() {
     const listaEquipe = document.getElementById('lista-equipe-admin');
     listaEquipe.innerHTML = '<p>Carregando membros...</p>';
-
     try {
-        // Vamos simplificar: vamos apenas buscar o e-mail do usuário logado.
         const { data: { user } } = await _supabase.auth.getUser();
-
         if (user) {
             listaEquipe.innerHTML = `
                 <div class="admin-item">
@@ -328,7 +376,6 @@ async function carregarEquipeAdmin() {
         } else {
             throw new Error('Não foi possível buscar o usuário logado.');
         }
-
     } catch (error) {
         console.error('Erro ao carregar equipe:', error.message);
         listaEquipe.innerHTML = '<p>Erro ao carregar equipe.</p>';

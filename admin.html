@@ -4,21 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Admin - Portal CA</title>
-
-    <script src="https://cdn.tiny.cloud/1/0gegn7yn5r8uv0nrkjfcyny4hh313isk91tecsj1kusec27l/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-
-    <link rel="stylesheet" href="style.css">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tiny.cloud/1/0gegn7yn5r8uv0nrkjfcyny4hh313isk91tecsj1kusec27l/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="admin-page"> <div class="admin-layout">
+<body class="admin-page">
+
+    <div class="admin-layout">
         
         <aside class="admin-sidebar">
             <div class="sidebar-header">
@@ -26,95 +24,90 @@
                 <small>(painel.html)</small>
             </div>
             <nav class="sidebar-nav">
-                <a href="#noticias" class="nav-link active" data-tab="tab-noticias">
-                    <i class="fa-solid fa-newspaper"></i> Notícias
-                </a>
-                <a href="#eventos" class="nav-link" data-tab="tab-eventos">
-                    <i class="fa-solid fa-calendar-days"></i> Eventos
-                </a>
-                <a href="#documentos" class="nav-link" data-tab="tab-documentos">
-                    <i class="fa-solid fa-file-arrow-up"></i> Documentos
-                </a>
-                <a href="#denuncias" class="nav-link" data-tab="tab-denuncias">
-                    <i class="fa-solid fa-shield-halved"></i> Denúncias
-                </a>
-                <a href="#equipe" class="nav-link" data-tab="tab-equipe">
-                    <i class="fa-solid fa-users"></i> Equipe
-                </a>
-                <a href="#" id="btn-logout" class="nav-link">
-                    <i class="fa-solid fa-right-from-bracket"></i> Sair (Logout)
-                </a>
+                <a href="#noticias" class="nav-link active" data-tab="tab-noticias"><i class="fa-solid fa-newspaper"></i> Notícias</a>
+                <a href="#eventos" class="nav-link" data-tab="tab-eventos"><i class="fa-solid fa-calendar-days"></i> Eventos</a>
+                <a href="#documentos" class="nav-link" data-tab="tab-documentos"><i class="fa-solid fa-file-arrow-up"></i> Documentos</a>
+                <a href="#denuncias" class="nav-link" data-tab="tab-denuncias"><i class="fa-solid fa-shield-halved"></i> Denúncias</a>
+                <a href="#equipe" class="nav-link" data-tab="tab-equipe"><i class="fa-solid fa-users"></i> Equipe</a>
+                <a href="#" id="btn-logout" class="nav-link"><i class="fa-solid fa-right-from-bracket"></i> Sair (Logout)</a>
             </nav>
         </aside>
 
         <main class="admin-content">
             
             <div class="tab-pane active" id="tab-noticias">
-                <section id="admin-form">
-                    <h2>Cadastrar/Editar Notícia</h2>
-                    <form id="form-nova-noticia">
-                        <div class="form-group"><label for="titulo">Título</label><input type="text" id="titulo" required></div>
-                        <div class="form-group"><label for="data">Data</label><input type="date" id="data" required></div>
-                        <div class="form-group"><label for="resumo">Resumo (Texto)</label><textarea id="resumo" rows="4" required></textarea></div>
-                        <button type="submit">Salvar Notícia</button>
-                    </form>
-                    <p id="success-message" style="color: var(--cor-acento);"></p>
-                </section>
-                <hr>
-                <section id="admin-list">
-                    <h2>Gerenciar Notícias</h2>
-                    <div id="lista-noticias-admin"><p>Carregando...</p></div>
-                </section>
+                <h2><i class="fa-solid fa-newspaper"></i> Gerenciador de Notícias</h2>
+                <div class="admin-grid-layout">
+                    <section id="admin-form">
+                        <h3>Cadastrar/Editar Notícia</h3>
+                        <form id="form-nova-noticia">
+                            <div class="form-group"><label for="titulo">Título</label><input type="text" id="titulo" required></div>
+                            <div class="form-group"><label for="data">Data</label><input type="date" id="data" required></div>
+                            <div class="form-group"><label for="resumo">Resumo (Texto)</label><textarea id="resumo" rows="10"></textarea></div>
+                            <button type="submit">Salvar Notícia</button>
+                            <p id="success-message" style="color: var(--cor-acento);"></p>
+                        </form>
+                    </section>
+                    <section id="admin-list">
+                        <h3>Gerenciar Notícias</h3>
+                        <div id="lista-noticias-admin"><p>Carregando...</p></div>
+                    </section>
+                </div>
             </div>
 
             <div class="tab-pane" id="tab-eventos">
-                <section id="admin-eventos">
-                    <h2>Cadastrar/Editar Evento</h2>
-                    <form id="form-novo-evento">
-                        <div class="form-group"><label for="evento-titulo">Título do Evento</label><input type="text" id="evento-titulo" required></div>
-                        <div class="form-group"><label for="evento-data">Data do Evento</label><input type="date" id="evento-data" required></div>
-                        <div class="form-group"><label for="evento-local">Local</label><input type="text" id="evento-local" placeholder="Ex: Auditório, Laboratório 5, Online, etc."></div>
-                        <button type="submit">Salvar Evento</button>
-                    </form>
-                    <p id="evento-success-message" style="color: var(--cor-acento);"></p>
-                </section>
-                <section id="admin-list-eventos">
-                    <h2>Gerenciar Eventos</h2>
-                    <div id="lista-eventos-admin"><p>Carregando...</p></div>
-                </section>
+                <h2><i class="fa-solid fa-calendar-days"></i> Gerenciador de Eventos</h2>
+                <div class="admin-grid-layout">
+                    <section id="admin-eventos">
+                        <h3>Cadastrar/Editar Evento</h3>
+                        <form id="form-novo-evento">
+                            <div class="form-group"><label for="evento-titulo">Título</label><input type="text" id="evento-titulo" required></div>
+                            <div class="form-group"><label for="evento-data">Data</label><input type="date" id="evento-data" required></div>
+                            <div class="form-group"><label for="evento-local">Local</label><input type="text" id="evento-local" placeholder="Ex: Auditório, Laboratório 5..."></div>
+                            <button type="submit">Salvar Evento</button>
+                        </form>
+                        <p id="evento-success-message" style="color: var(--cor-acento);"></p>
+                    </section>
+                    <section id="admin-list-eventos">
+                        <h3>Gerenciar Eventos</h3>
+                        <div id="lista-eventos-admin"><p>Carregando...</p></div>
+                    </section>
+                </div>
             </div>
 
             <div class="tab-pane" id="tab-documentos">
-                <section id="admin-documentos">
-                    <h2>Cadastrar Novo Documento</h2>
-                    <form id="form-novo-documento">
-                        <div class="form-group"><label for="doc-titulo">Título do Documento</label><input type="text" id="doc-titulo" required placeholder="Ex: Edital 001/2025"></div>
-                        <div class="form-group"><label for="doc-descricao">Descrição (Opcional)</label><input type="text" id="doc-descricao" placeholder="Ex: Prova do professor X, ano 2024"></div>
-                        <div class="form-group"><label for="doc-arquivo">Arquivo</label><input type="file" id="doc-arquivo" required></div>
-                        <button type="submit">Salvar Documento</button>
-                    </form>
-                    <p id="doc-success-message" style="color: var(--cor-acento);"></p>
-                    <p id="doc-upload-status" style="color: #5a0fc8;"></p>
-                </section>
-                <section id="admin-list-documentos">
-                    <h2>Gerenciar Documentos</h2>
-                    <div id="lista-documentos-admin"><p>Carregando...</p></div>
-                </section>
+                <h2><i class="fa-solid fa-file-arrow-up"></i> Gerenciador de Documentos</h2>
+                <div class="admin-grid-layout">
+                    <section id="admin-documentos">
+                        <h3>Cadastrar Novo Documento</h3>
+                        <form id="form-novo-documento">
+                            <div class="form-group"><label for="doc-titulo">Título</label><input type="text" id="doc-titulo" required></div>
+                            <div class="form-group"><label for="doc-descricao">Descrição (Opcional)</label><input type="text" id="doc-descricao"></div>
+                            <div class="form-group"><label for="doc-arquivo">Arquivo</label><input type="file" id="doc-arquivo" required></div>
+                            <button type="submit">Salvar Documento</button>
+                        </form>
+                        <p id="doc-success-message" style="color: var(--cor-acento);"></p>
+                        <p id="doc-upload-status" style="color: #5a0fc8;"></p>
+                    </section>
+                    <section id="admin-list-documentos">
+                        <h3>Gerenciar Documentos</h3>
+                        <div id="lista-documentos-admin"><p>Carregando...</p></div>
+                    </section>
+                </div>
             </div>
 
             <div class="tab-pane" id="tab-denuncias">
+                <h2><i class="fa-solid fa-shield-halved"></i> Caixa de Denúncias</h2>
                 <section id="admin-denuncias">
-                    <h2>Caixa de Denúncias Anônimas</h2>
                     <p>As denúncias mais recentes aparecem primeiro. Trate esta informação com sigilo.</p>
                     <div id="lista-denuncias-admin"><p>Carregando denúncias...</p></div>
                 </section>
             </div>
 
             <div class="tab-pane" id="tab-equipe">
+                <h2><i class="fa-solid fa-users"></i> Gerenciar Equipe (Admins)</h2>
                 <section id="admin-equipe">
-                    <h2>Gerenciar Equipe (Admins)</h2>
                     <p>Para adicionar um novo membro à gestão (um novo Admin), o "Super Admin" (você) deve ir ao painel do Supabase, na aba "Authentication", e clicar em "Add user".</p>
-                    <p>Por razões de segurança, a criação de novos usuários com privilégios de admin é feita apenas pelo backend seguro, e não por esta página.</p>
                     <br>
                     <h3>Membros Atuais da Equipe:</h3>
                     <div id="lista-equipe-admin"><p>Carregando equipe...</p></div>

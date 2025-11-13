@@ -259,16 +259,14 @@ footer {
 /* ... etc ... */
 
 /* =================================
-   9. CSS DO DASHBOARD "BABADO" (Admin)
+   9. CSS DO DASHBOARD "BABADO" (Admin V2)
    ================================= */
 
-/* Esconde o Header e Footer normais na pág de admin */
-/* CORREÇÃO: Só aplica se o BODY tiver a classe 'admin-page' */
+/* Esconde o Header/Footer na página admin */
 body.admin-page > header, body.admin-page > footer {
     display: none;
 }
 
-/* O "abraço" do layout (sidebar + conteúdo) */
 .admin-layout {
     display: flex;
     min-height: 100vh;
@@ -277,13 +275,13 @@ body.admin-page > header, body.admin-page > footer {
 /* O Menu Lateral (Sidebar) */
 .admin-sidebar {
     width: 250px;
-    background: #111; /* Mais escuro que o card */
+    background: #111;
     color: white;
     display: flex;
     flex-direction: column;
     border-right: 1px solid var(--cor-borda);
+    flex-shrink: 0; /* Impede que o menu encolha */
 }
-
 .sidebar-header {
     padding: 20px;
     text-align: center;
@@ -292,18 +290,12 @@ body.admin-page > header, body.admin-page > footer {
     background: #000;
     border-bottom: 1px solid var(--cor-acento);
 }
-.sidebar-header h3 {
-    color: var(--cor-acento);
-}
-
-.sidebar-nav {
-    flex-grow: 1;
-}
-
+.sidebar-header h3 { color: var(--cor-acento); }
+.sidebar-nav { flex-grow: 1; }
 .sidebar-nav .nav-link {
     display: flex;
     align-items: center;
-    color: #adb5bd; /* Cinza claro */
+    color: #adb5bd;
     padding: 15px 20px;
     text-decoration: none;
     font-weight: 500;
@@ -311,35 +303,24 @@ body.admin-page > header, body.admin-page > footer {
     transition: all 0.3s ease;
     border-left: 4px solid transparent;
 }
+.sidebar-nav .nav-link i { margin-right: 15px; width: 20px; }
 
-.sidebar-nav .nav-link i {
-    margin-right: 15px; /* Ícone */
-    width: 20px;
-}
-
+/* --- A MUDANÇA DE COR "VAZADA" (Menu) --- */
 .sidebar-nav .nav-link:hover {
     background: var(--cor-fundo-card);
-    color: white;
-    border-left: 4px solid var(--cor-acento); /* O verde! */
+    color: var(--cor-acento); /* Fica verde no hover */
+    border-left: 4px solid var(--cor-acento);
 }
-
-/* O link ATIVO (a aba que estamos vendo) */
 .sidebar-nav .nav-link.active {
-    background: var(--cor-acento);
-    color: #000;
+    background: var(--cor-fundo-card); /* Fundo escuro */
+    color: var(--cor-acento); /* Texto verde */
     font-weight: 700;
-    border-left: 4px solid white;
+    border-left: 4px solid var(--cor-acento); /* Borda verde */
 }
 
 /* Botão de Sair */
-#btn-logout.nav-link {
-    margin-top: auto; /* Joga ele pra baixo */
-    border-top: 1px solid var(--cor-borda);
-}
 #btn-logout.nav-link:hover {
-    background: #e74c3c; /* Vermelho no hover */
-    color: white;
-    border-left-color: #e74c3c;
+    background: #e74c3c; color: white; border-left-color: #e74c3c;
 }
 
 /* A Área de Conteúdo (onde as abas aparecem) */
@@ -347,39 +328,157 @@ body.admin-page > header, body.admin-page > footer {
     flex-grow: 1;
     padding: 30px;
     background: var(--cor-fundo);
-    max-width: calc(100% - 250px); /* Garante que não estoure */
+    overflow-x: auto; /* Garante responsividade se a tela for pequena */
+}
+.admin-content h2 { /* Título da Aba */
+    font-size: 2rem;
+    color: var(--cor-titulo);
+    margin-bottom: 20px;
+    border: none;
+}
+.admin-content h2 i {
+    color: var(--cor-acento);
+    margin-right: 10px;
+}
+.admin-content h3 {
+    font-size: 1.3rem;
+    color: var(--cor-titulo);
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--cor-borda);
+    padding-bottom: 10px;
 }
 
 /* A "mágica" das abas */
-.tab-pane {
-    display: none; /* Todas começam escondidas */
-}
-.tab-pane.active {
-    display: block; /* A ativa aparece */
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* --- O NOVO LAYOUT "GRID" (O que você pediu) --- */
+.admin-grid-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr; /* 2 colunas: Form | Lista */
+    gap: 30px;
+    align-items: start; /* Alinha os topos */
 }
 
-/* Ajustes no CSS antigo para o novo layout */
-.admin-content section {
-    max-width: 900px; /* Limita a largura dos formulários */
-    margin: 0 auto 20px auto; /* Centraliza */
+/* Em telas pequenas, volta a ser 1 coluna (jogado) */
+@media (max-width: 1200px) {
+    .admin-grid-layout {
+        grid-template-columns: 1fr;
+    }
 }
 
-/* Corrigindo a lista de denúncias */
+.admin-grid-layout > section {
+    margin: 0; /* Reseta a margem antiga */
+}
+
+/* --- A MUDANÇA DE COR "VAZADA" (Botões) --- */
+/* (Sobrescreve o style.css principal) */
+.admin-content button[type="submit"] {
+    background: transparent;
+    color: var(--cor-acento);
+    border: 2px solid var(--cor-acento);
+    transition: all 0.3s ease;
+}
+.admin-content button[type="submit"]:hover {
+    background: var(--cor-acento);
+    color: var(--cor-fundo);
+    box-shadow: 0 0 10px var(--cor-acento);
+}
+
+/* --- A LISTA "TABELA" (O que você pediu) --- */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 0.95rem;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--cor-borda);
+    text-align: left;
+}
+
+.admin-table th {
+    font-family: var(--fonte-tech);
+    color: var(--cor-acento);
+    font-size: 1rem;
+}
+
+.admin-table tbody tr {
+    background: var(--cor-fundo-card);
+    transition: background-color 0.3s ease;
+}
+
+.admin-table tbody tr:hover {
+    background: #2a2a2a; /* Um pouco mais claro no hover */
+}
+
+.admin-table td a {
+    color: var(--cor-titulo);
+    font-weight: 500;
+}
+.admin-table td a:hover {
+    color: var(--cor-acento);
+}
+
+.admin-table td button {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    margin-right: 5px;
+}
+
+/* Responsividade da Tabela (Opcional, mas "babado") */
+@media (max-width: 768px) {
+    .admin-table thead {
+        display: none; /* Esconde o header no mobile */
+    }
+    .admin-table tr {
+        display: block;
+        margin-bottom: 15px;
+        border: 1px solid var(--cor-borda);
+        border-radius: 5px;
+        background: var(--cor-fundo-card);
+    }
+    .admin-table td {
+        display: block;
+        text-align: right; /* Alinha o valor à direita */
+        padding-left: 50%; /* Espaço para o "label" */
+        position: relative;
+        border-bottom: 1px solid var(--cor-borda);
+    }
+    .admin-table td:last-child {
+        border-bottom: 0;
+    }
+    .admin-table td::before {
+        /* A Mágica: Transforma o header da coluna em label */
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        padding-left: 0;
+        width: 45%;
+        text-align: left;
+        font-weight: bold;
+        font-family: var(--fonte-tech);
+        color: var(--cor-acento);
+    }
+}
+
+/* Ajustes na lista de denúncias */
 #lista-denuncias-admin .admin-item {
     border-left: 5px solid #e74c3c;
     margin-top: 15px;
     padding: 15px;
     background: #111;
 }
-#lista-denuncias-admin strong {
-    font-size: 1.2rem;
-    color: #e74c3c;
-}
-#lista-denuncias-admin p {
-    white-space: pre-wrap; /* Mantém as quebras de linha */
-}
+#lista-denuncias-admin strong { font-size: 1.2rem; color: #e74c3c; }
+#lista-denuncias-admin p { white-space: pre-wrap; }
 #lista-denuncias-admin .btn-excluir-denuncia {
     background-color: #e74c3c;
     color: white;
     padding: 8px 12px;
+}
+#lista-denuncias-admin .btn-excluir-denuncia:hover {
+    background-color: #c0392b;
 }
