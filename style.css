@@ -482,3 +482,152 @@ body.admin-page > header, body.admin-page > footer {
 #lista-denuncias-admin .btn-excluir-denuncia:hover {
     background-color: #c0392b;
 }
+
+/* =================================
+   11. NOVO DESTAQUE (Hero Section)
+   ================================= */
+.destaque-hero {
+    max-width: 1200px;
+    margin: 30px auto 10px auto; /* Espaço em cima e embaixo */
+    padding: 0 20px;
+}
+
+.sobre-container {
+    background: linear-gradient(145deg, #111, #0a0a0a);
+    border: 1px solid var(--cor-acento);
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0 0 20px rgba(57, 255, 20, 0.1); /* Brilho verde suave */
+    text-align: center;
+}
+
+.sobre-texto h2 {
+    font-size: 2.2rem;
+    margin-bottom: 15px;
+    color: var(--cor-acento);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.sobre-texto p {
+    max-width: 800px;
+    margin: 0 auto 40px auto;
+    font-size: 1.1rem;
+    color: #ccc;
+}
+
+/* =================================
+   12. O CARROSSEL "BABADO"
+   ================================= */
+.equipe-carousel-wrapper h3 {
+    border-bottom: 1px solid #333;
+    display: inline-block;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.carousel-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+.equipe-track {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto; /* Permite rolar */
+    scroll-behavior: smooth;
+    padding: 20px 5px;
+    
+    /* Esconde a barra de rolagem (Fica mais bonito) */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE/Edge */
+}
+.equipe-track::-webkit-scrollbar { 
+    display: none; /* Chrome/Safari */
+}
+
+/* Botões do Carrossel */
+#btn-prev, #btn-next {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--cor-acento);
+    border: 1px solid var(--cor-acento);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+#btn-prev:hover, #btn-next:hover {
+    background: var(--cor-acento);
+    color: #000;
+    transform: scale(1.1);
+}
+
+/* Card do Membro */
+.equipe-card {
+    min-width: 200px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s;
+}
+.equipe-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--cor-acento);
+}
+
+.foto-borda {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    padding: 3px;
+    background: linear-gradient(45deg, var(--cor-acento), #000);
+    margin-bottom: 10px;
+}
+.foto-borda img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #000;
+}
+
+.equipe-card strong {
+    color: #fff;
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+.equipe-card span {
+    color: var(--cor-acento);
+    font-size: 0.85rem;
+    font-family: var(--fonte-tech);
+    margin-bottom: 10px;
+}
+
+.social-mini a {
+    font-size: 1.2rem;
+    margin: 0 5px;
+    color: #666;
+    transition: color 0.3s;
+}
+.social-mini a:hover {
+    color: var(--cor-acento);
+}
+
+/* Responsivo do Hero */
+@media (max-width: 768px) {
+    .sobre-texto h2 { font-size: 1.5rem; }
+    .sobre-container { padding: 20px; }
+    /* No celular, os botões somem e a pessoa usa o dedo pra arrastar */
+    #btn-prev, #btn-next { display: none; } 
+}

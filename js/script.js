@@ -146,3 +146,20 @@ function formatarData(dataISO) {
     const [ano, mes, dia] = dataISO.split('T')[0].split('-');
     return `${dia}/${mes}/${ano}`;
 }
+
+// ... (seu código anterior) ...
+
+// --- LÓGICA DO CARROSSEL DE EQUIPE ---
+const track = document.getElementById('equipe-track');
+const btnPrev = document.getElementById('btn-prev');
+const btnNext = document.getElementById('btn-next');
+
+if (track && btnPrev && btnNext) {
+    btnPrev.addEventListener('click', () => {
+        track.scrollBy({ left: -220, behavior: 'smooth' }); // Rola pra esquerda
+    });
+    
+    btnNext.addEventListener('click', () => {
+        track.scrollBy({ left: 220, behavior: 'smooth' }); // Rola pra direita
+    });
+}
