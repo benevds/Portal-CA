@@ -1,165 +1,174 @@
-// Importa a conexão PRONTA do nosso arquivo central
+// 1. IMPORTAR A CONEXÃO (Certifique-se que o arquivo supabaseClient.js existe na mesma pasta)
 import { _supabase } from './supabaseClient.js';
 
-// --- PASSO 1: O que fazer quando a página carregar ---
-document.addEventListener('DOMContentLoaded', () => {
-    // Carrega todo o conteúdo dinâmico
-    carregarNoticias();
-    carregarCalendario();
-    carregarDocumentos();
+document.addEventListener('DOMContentLoaded', function() {
     
-    // Liga o formulário de denúncia
-    setupDenunciaForm();
+    // --- A. INICIALIZAÇÃO VISUAL ---
 
-    // Liga as animações "suaves" de fade-in
-    setupFadeInAnimations();
+    // 1. Partículas (Fundo Matrix/Tech)
+    tsParticles.load("tsparticles", {
+        background: { color: { value: "#0a0a0a" } },
+        fpsLimit: 60,
+        interactivity: {
+            events: { onClick: { enable: true, mode: "push" }, onHover: { enable: true, mode: "repulse" } },
+            modes: { push: { quantity: 4 }, repulse: { distance: 100, duration: 0.4 } }
+        },
+        particles: {
+            color: { value: "#39ff14" },
+            links: { color: "#39ff14", distance: 150, enable: true, opacity: 0.3, width: 1 },
+            move: { enable: true, speed: 1.5 },
+            number: { density: { enable: true, area: 800 }, value: 60 },
+            opacity: { value: 0.5 },
+            shape: { type: "circle" },
+            size: { value: { min: 1, max: 3 } }
+        },
+        detectRetina: true
+    });
+
+    // 2. Swiper (Carrossel da Equipe)
+    new Swiper(".mySwiper", {
+        slidesPerView: 1,
+        spaceBetween: 20,
+        loop: true,
+        autoplay: { delay: 3000, disableOnInteraction: false },
+        pagination: { el: ".swiper-pagination", clickable: true },
+        breakpoints: {
+            640: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 }
+        }
+    });
+
+    // --- B. INTEGRAÇÃO COM SUPABASE ---
+
+    // 3. Carregar Notícias
+    carregarNoticias();
+
+    // 4. Carregar Calendário (Com eventos do Banco)
+    carregarCalendario();
+
+    // 5. Carregar Documentos
+    carregarDocumentos();
+
+    // 6. Configurar Formulário de Denúncia
+    setupDenunciaForm();
 });
 
-// --- PASSO 2: FUNÇÃO PARA CARREGAR NOTÍCIAS ---
+// --- FUNÇÕES AUXILIARES ---
+
 async function carregarNoticias() {
-    const mural = document.getElementById('mural-noticias');
-    if (!mural) return; 
-    mural.innerHTML = "<p>Carregando notícias...</p>"; 
-    try {
-        const { data: noticias, error } = await _supabase.from('noticias').select('*').order('data', { ascending: false });
-        if (error) throw error;
-        if (noticias.length === 0) {
-            mural.innerHTML = "<p>Nenhuma notícia publicada ainda.</p>";
-            return;
-        }
-        mural.innerHTML = '';
-        noticias.forEach(noticia => {
-            const card = document.createElement('article');
-            card.className = 'card';
-            card.innerHTML = `
-                <h3>${noticia.titulo}</h3>
-                <div class="data">${formatarData(noticia.data)}</div>
-                <p>${noticia.resumo}</p>
-            `;
-            mural.appendChild(card);
-        });
-    } catch (error) {
-        console.error("Erro ao carregar notícias:", error.message);
-        mural.innerHTML = "<p>Erro ao carregar notícias.</p>";
+    const container = document.getElementById('mural-noticias-container');
+    const { data: noticias, error } = await _supabase
+        .from('noticias')
+        .select('*')
+        .order('data', { ascending: false })
+        .limit(5); // Pega as 5 últimas
+
+    if (error) {
+        console.error('Erro ao carregar notícias:', error);
+        container.innerHTML = '<p>Erro ao carregar notícias.</p>';
+        return;
     }
+
+    if (!noticias || noticias.length === 0) {
+        container.innerHTML = '<p>Nenhuma notícia encontrada.</p>';
+        return;
+    }
+
+    container.innerHTML = ''; // Limpa
+    noticias.forEach(noticia => {
+        const div = document.createElement('div');
+        div.className = 'news-item';
+        div.innerHTML = `
+            <h4>${noticia.titulo}</h4>
+            <span class="date">${formatarData(noticia.data)}</span>
+            <div class="resumo">${noticia.resumo}</div>
+        `;
+        container.appendChild(div);
+    });
 }
 
-// --- PASSO 3: FUNÇÃO PARA CARREGAR O CALENDÁRIO ---
 async function carregarCalendario() {
-    const calendarEl = document.getElementById('calendar-container');
-    if (!calendarEl) return;
+    const calendarEl = document.getElementById('calendar');
+    
+    // Busca eventos no Supabase
+    const { data: eventosDB, error } = await _supabase.from('eventos').select('*');
+    
+    let eventosFormatados = [];
+    if (!error && eventosDB) {
+        eventosFormatados = eventosDB.map(e => ({
+            title: e.titulo,
+            start: e.data, // Certifique-se que no banco é YYYY-MM-DD
+            allDay: true
+        }));
+    }
 
-    const calendar = new FullCalendar.Calendar(calendarEl, {
+    var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
-        headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek'
-        },
         locale: 'pt-br',
-        buttonText: { today: 'Hoje', month: 'Mês', week: 'Semana' },
-        events: async function(fetchInfo, successCallback, failureCallback) {
-            try {
-                const { data, error } = await _supabase.from('eventos').select('titulo, data');
-                if (error) throw error;
-                const eventosFormatados = data.map(evento => ({
-                    title: evento.titulo,
-                    start: evento.data
-                }));
-                successCallback(eventosFormatados);
-            } catch (error) { failureCallback(error); }
+        themeSystem: 'standard',
+        headerToolbar: {
+            left: 'prev,next',
+            center: 'title',
+            right: 'dayGridMonth' // Removeu botões desnecessários para mobile
         },
-        dateClick: (info) => alert('Você clicou no dia: ' + info.dateStr),
-        eventClick: (info) => alert('Evento: ' + info.event.title)
+        height: 'auto',
+        events: eventosFormatados, // Injeta os eventos do banco
+        eventColor: '#39ff14',
+        eventTextColor: '#000'
     });
     calendar.render();
 }
 
-// --- PASSO 4: FUNÇÃO PARA CARREGAR DOCUMENTOS ---
 async function carregarDocumentos() {
-    const listaDiv = document.getElementById('lista-de-documentos');
-    if (!listaDiv) return;
-    listaDiv.innerHTML = "<p>Carregando documentos...</p>";
-    try {
-        const { data, error } = await _supabase.from('documentos').select('*').order('created_at', { ascending: false });
-        if (error) throw error;
-        if (data.length === 0) {
-            listaDiv.innerHTML = '<p>Nenhum documento publicado.</p>';
-            return;
-        }
-        listaDiv.innerHTML = ''; 
-        const ul = document.createElement('ul');
-        ul.className = 'links-importantes'; // Reutilizando o estilo
-        data.forEach(doc => {
-            const li = document.createElement('li');
-            li.innerHTML = `<a href="${doc.url_publica}" target="_blank">${doc.titulo}</a>`;
-            ul.appendChild(li);
-        });
-        listaDiv.appendChild(ul);
-    } catch (error) {
-        console.error('Erro ao carregar documentos:', error.message);
-        listaDiv.innerHTML = '<p>Erro ao carregar documentos.</p>';
+    const container = document.getElementById('lista-documentos-container');
+    const { data: docs, error } = await _supabase
+        .from('documentos')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (!docs || docs.length === 0) {
+        container.innerHTML = '<p>Nenhum documento.</p>';
+        return;
     }
+
+    let html = '<ul>';
+    docs.forEach(doc => {
+        html += `<li><a href="${doc.url_publica}" target="_blank"><i class="fas fa-file-pdf"></i> ${doc.titulo}</a></li>`;
+    });
+    html += '</ul>';
+    container.innerHTML = html;
 }
 
-// --- PASSO 5: FUNÇÃO PARA FORMULÁRIO DE DENÚNCIA ---
 function setupDenunciaForm() {
-    const formDenuncia = document.getElementById('form-denuncia');
-    if (!formDenuncia) return;
+    const form = document.getElementById('form-denuncia');
+    if (!form) return;
 
-    formDenuncia.addEventListener('submit', async (e) => {
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const tipo = document.getElementById('tipo').value;
-        const descricao = document.getElementById('descricao').value;
-        try {
-            const { error } = await _supabase.from('denuncias').insert({ tipo: tipo, descricao: descricao });
-            if (error) throw error;
-            alert('Denúncia enviada anonimamente. Obrigado.');
-            formDenuncia.reset();
-        } catch (error) {
-            alert('Erro ao enviar: ' + error.message);
+        const tipo = document.getElementById('denuncia-tipo').value;
+        const descricao = document.getElementById('denuncia-desc').value;
+        const btn = form.querySelector('button');
+
+        btn.disabled = true;
+        btn.textContent = "Enviando...";
+
+        const { error } = await _supabase
+            .from('denuncias')
+            .insert([{ tipo, descricao }]);
+
+        if (error) {
+            alert('Erro ao enviar denúncia: ' + error.message);
+        } else {
+            alert('Denúncia enviada com sucesso! Seus dados estão seguros.');
+            form.reset();
         }
+        btn.disabled = false;
+        btn.textContent = "Enviar";
     });
 }
 
-// --- PASSO 6: A MÁGICA "SUAVE" (Animação de Fade-in) ---
-function setupFadeInAnimations() {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-            }
-        });
-    }, {
-        threshold: 0.1 // Ativa quando 10% do item estiver visível
-    });
-
-    // Observa todas as seções com a classe .fade-in
-    document.querySelectorAll('.fade-in').forEach(section => {
-        observer.observe(section);
-    });
-}
-
-// --- PASSO 7: Função helper de data (reutilizável) ---
 function formatarData(dataISO) {
     if (!dataISO) return '';
-    const [ano, mes, dia] = dataISO.split('T')[0].split('-');
+    const [ano, mes, dia] = dataISO.split('-');
     return `${dia}/${mes}/${ano}`;
-}
-
-// ... (seu código anterior) ...
-
-// --- LÓGICA DO CARROSSEL DE EQUIPE ---
-const track = document.getElementById('equipe-track');
-const btnPrev = document.getElementById('btn-prev');
-const btnNext = document.getElementById('btn-next');
-
-if (track && btnPrev && btnNext) {
-    btnPrev.addEventListener('click', () => {
-        track.scrollBy({ left: -220, behavior: 'smooth' }); // Rola pra esquerda
-    });
-    
-    btnNext.addEventListener('click', () => {
-        track.scrollBy({ left: 220, behavior: 'smooth' }); // Rola pra direita
-    });
 }

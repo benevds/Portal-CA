@@ -1,181 +1,158 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal do Centro Acadêmico de SI (UFOPA)</title>
+    <title>Portal CA-SI | Centro Acadêmico de Sistemas de Informação</title>
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
-    <script src="https://cdn.jsdelivr.net/npm/tsparticles@3/tsparticles.bundle.min.js"></script>
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
+    
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+    <div id="tsparticles"></div>
+
     <header>
-        <div id="particles-js"></div>
-        <h1>PORTAL CA-SI</h1>
+        <div class="logo"> &lt;PORTAL CA-SI /&gt; </div>
         <nav>
-            <a href="#sobre">Sobre</a> <a href="#noticias">Notícias</a>
+            <a href="#sobre">Sobre</a>
+            <a href="#noticias">Notícias</a>
             <a href="#calendario">Calendário</a>
             <a href="#documentos">Documentos</a>
-            <a href="#projetos">Projetos</a>
-            <a href="login.html" class="btn-admin">Login Adm</a>
+            <a href="login.html" class="login-btn">LOGIN ADM</a>
         </nav>
     </header>
 
-    <section id="sobre" class="destaque-hero fade-in">
-        <div class="sobre-container">
-            <div class="sobre-texto">
-                <h2>Sobre o CA de Sistemas de Informação</h2>
-                <p>O Centro Acadêmico de Sistemas de Informação (CASI) é a entidade máxima de representação dos estudantes do curso na UFOPA. Nossa missão é lutar pelos direitos dos alunos, promover eventos acadêmicos, culturais e integrar a comunidade discente.</p>
+    <section class="hero" id="sobre">
+        <div class="hero-content">
+            <div class="intro">
+                <h1>CA de Sistemas de Informação</h1>
+                <p>Conectando alunos, tecnologia e futuro. Somos a voz e a força do curso na UFOPA.</p>
             </div>
             
-            <div class="equipe-carousel-wrapper">
-                <h3>Gestão 2025 - "Nome da Chapa"</h3>
-                
-                <div class="carousel-controls">
-                    <button id="btn-prev"><i class="fa-solid fa-chevron-left"></i></button>
-                    <div class="equipe-track" id="equipe-track">
-                        
-                        <div class="equipe-card">
-                            <div class="foto-borda">
-                                <img src="https://github.com/benevds.png" alt="Foto">
-                            </div>
-                            <strong>Alessandro Benevides</strong>
-                            <span>Presidente</span>
-                            <div class="social-mini">
-                                <a href="#"><i class="fa-brands fa-instagram"></i></a>
-                                <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+            <div class="stats">
+                <div class="stat"><i class="fas fa-project-diagram"></i> +10 Projetos</div>
+                <div class="stat"><i class="fas fa-users"></i> 100% Atuante</div>
+            </div>
+
+            <div class="carousel">
+                <div class="swiper mySwiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <div class="team-card">
+                                <img src="https://ui-avatars.com/api/?name=Joao+Silva&background=0a0a0a&color=39ff14" alt="Presidente">
+                                <h3>João Silva</h3>
+                                <p>Presidente</p>
+                                <div class="socials"><i class="fab fa-instagram"></i></div>
                             </div>
                         </div>
-
-                        <div class="equipe-card">
-                            <div class="foto-borda">
-                                <img src="https://via.placeholder.com/100/39ff14/000000?text=V" alt="Foto">
-                            </div>
-                            <strong>Vice Presidente</strong>
-                            <span>Vice-Presidência</span>
-                            <div class="social-mini">
-                                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                        <div class="swiper-slide">
+                            <div class="team-card">
+                                <img src="https://ui-avatars.com/api/?name=Maria+Santos&background=0a0a0a&color=39ff14" alt="Vice">
+                                <h3>Maria Santos</h3>
+                                <p>Vice-Presidente</p>
+                                <div class="socials"><i class="fab fa-instagram"></i></div>
                             </div>
                         </div>
-
-                        <div class="equipe-card">
-                            <div class="foto-borda">
-                                <img src="https://via.placeholder.com/100/39ff14/000000?text=Sec" alt="Foto">
-                            </div>
-                            <strong>Diretor Geral</strong>
-                            <span>Secretaria</span>
-                            <div class="social-mini">
-                                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                        <div class="swiper-slide">
+                            <div class="team-card">
+                                <img src="https://ui-avatars.com/api/?name=Pedro+Dev&background=0a0a0a&color=39ff14" alt="Secretário">
+                                <h3>Pedro Dev</h3>
+                                <p>Secretário Geral</p>
+                                <div class="socials"><i class="fab fa-instagram"></i></div>
                             </div>
                         </div>
-
-                        <div class="equipe-card">
-                            <div class="foto-borda">
-                                <img src="https://via.placeholder.com/100/39ff14/000000?text=Mkt" alt="Foto">
-                            </div>
-                            <strong>Diretor de Mkt</strong>
-                            <span>Comunicação</span>
-                            <div class="social-mini">
-                                <a href="#"><i class="fa-brands fa-instagram"></i></a>
-                            </div>
-                        </div>
-
-                         </div>
-                    <button id="btn-next"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                    <div class="swiper-pagination"></div>
                 </div>
             </div>
         </div>
     </section>
 
-    <main class="portal-grid">
+    <main class="main-content">
         
-        <div class="portal-feed">
+        <div class="main-column">
             
-            <section id="noticias" class="fade-in">
-                <h2><i class="fa-solid fa-newspaper"></i> Mural de Notícias</h2>
-                <div id="mural-noticias"><p>Carregando...</p></div>
-            </section>
-
-            <section id="calendario" class="fade-in">
-                <h2><i class="fa-solid fa-calendar-days"></i> Calendário Acadêmico</h2>
-                <div id="calendar-container"></div>
-            </section>
-
-            <section id="projetos" class="fade-in">
-                <h2><i class="fa-solid fa-lightbulb"></i> Projetos do Curso</h2>
-                <div class="projetos-grid">
-                    <div class="card-projeto">
-                        <h3>Projeto "Boto" IA</h3>
-                        <p>Uso de Inteligência Artificial para monitorar botos no Rio Amazonas.</p>
-                    </div>
-                    <div class="card-projeto">
-                        <h3>App "Saúde Ribeirinha"</h3>
-                        <p>Aplicativo mobile para conectar agentes de saúde.</p>
-                    </div>
-                </div>
-            </section>
-            
-            <section id="galeria" class="fade-in">
-                <h2><i class="fa-solid fa-images"></i> Galeria de Fotos</h2>
-                <div class="galeria-grid">
-                    <img src="https://via.placeholder.com/300x200/1a1a1a/39ff14?text=Foto+1" alt="Foto">
-                    <img src="https://via.placeholder.com/300x200/1a1a1a/39ff14?text=Foto+2" alt="Foto">
-                    <img src="https://via.placeholder.com/300x200/1a1a1a/39ff14?text=Foto+3" alt="Foto">
+            <section class="news-wall" id="noticias">
+                <h2><i class="far fa-newspaper"></i> Mural de Notícias</h2>
+                <div id="mural-noticias-container">
+                    <p>Carregando notícias do sistema...</p>
                 </div>
             </section>
 
+            <section class="calendar" id="calendario">
+                <h2><i class="far fa-calendar-alt"></i> Agenda Acadêmica</h2>
+                <div id="calendar"></div>
+            </section>
+
+            <section class="projects" id="projetos">
+                <h2><i class="fas fa-laptop-code"></i> Projetos do Curso</h2>
+                <div class="project-card">
+                    <h3>🤖 Boto IA</h3>
+                    <p>Pesquisa de inteligência artificial aplicada ao monitoramento ambiental.</p>
+                </div>
+                <div class="project-card">
+                    <h3>📱 App Saúde Ribeirinha</h3>
+                    <p>Solução mobile para agentes de saúde em comunidades isoladas.</p>
+                </div>
+            </section>
+
+            <section class="gallery">
+                <h2><i class="far fa-images"></i> Galeria</h2>
+                <div class="gallery-grid">
+                    <img src="https://via.placeholder.com/150/111/39ff14?text=Foto+1" alt="Galeria">
+                    <img src="https://via.placeholder.com/150/111/39ff14?text=Foto+2" alt="Galeria">
+                    <img src="https://via.placeholder.com/150/111/39ff14?text=Foto+3" alt="Galeria">
+                </div>
+            </section>
         </div>
 
-        <aside class="sidebar-portal">
+        <aside class="sidebar">
             
-            <div id="documentos" class="sidebar-widget fade-in">
-                <h3><i class="fa-solid fa-file-arrow-down"></i> Documentos</h3>
-                <div id="lista-de-documentos"><p>Carregando...</p></div>
-            </div>
+            <section class="documents" id="documentos">
+                <h3><i class="fas fa-file-download"></i> Documentos</h3>
+                <div id="lista-documentos-container">
+                    <p>Carregando...</p>
+                </div>
+            </section>
 
-            <div class="sidebar-widget fade-in">
-                <h3><i class="fa-solid fa-link"></i> Links Úteis</h3>
-                <ul class="links-importantes">
-                    <li><a href="https://www.ufopa.edu.br/sigaa/" target="_blank">SIGAA (Portal do Aluno)</a></li>
-                    <li><a href="https://www.ufopa.edu.br/proen/" target="_blank">PROEN (Editais)</a></li>
-                    <li><a href="https://www.ufopa.edu.br/ici/" target="_blank">Site do ICI</a></li>
+            <section class="links">
+                <h3><i class="fas fa-link"></i> Links Úteis</h3>
+                <ul>
+                    <li><a href="https://sigaa.ufopa.edu.br" target="_blank"><i class="fas fa-external-link-alt"></i> SIGAA</a></li>
+                    <li><a href="http://www.ufopa.edu.br/proen/" target="_blank"><i class="fas fa-external-link-alt"></i> PROEN</a></li>
                 </ul>
-            </div>
-            
-            <div id="denuncia" class="sidebar-widget fade-in">
-                <h3><i class="fa-solid fa-user-secret"></i> Denúncia Anônima</h3>
-                <p style="font-size: 0.9rem; margin-bottom: 10px; color: #888;">Sua identidade é protegida.</p>
-                <form id="form-denuncia">
-                    <div class="form-group">
-                        <input type="text" id="tipo" required placeholder="Assunto...">
-                    </div>
-                    <div class="form-group">
-                        <textarea id="descricao" rows="4" required placeholder="Mensagem..."></textarea>
-                    </div>
-                    <button type="submit" style="width: 100%;">Enviar</button>
-                </form>
-            </div>
+            </section>
 
+            <section class="complaint-form" id="denuncias">
+                <h3><i class="fas fa-user-secret"></i> Denúncia Anônima</h3>
+                <form id="form-denuncia">
+                    <input type="text" id="denuncia-tipo" placeholder="Assunto (ex: Infraestrutura)" required>
+                    <textarea id="denuncia-desc" placeholder="Descreva o problema..." rows="4" required></textarea>
+                    <button type="submit">Enviar Denúncia</button>
+                </form>
+            </section>
         </aside>
     </main>
 
     <footer>
-        <div class="redes-sociais">
-            <a href="#" target="_blank"><i class="fa-brands fa-instagram"></i></a>
-            <a href="#" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
-            <a href="#" target="_blank"><i class="fa-solid fa-envelope"></i></a>
+        <div class="socials">
+            <i class="fab fa-instagram"></i>
+            <i class="fab fa-whatsapp"></i>
+            <i class="fab fa-github"></i>
         </div>
-        <p>© 2025 - Centro Acadêmico de Sistemas de Informação (UFOPA)</p>
+        <p>&copy; 2025 Centro Acadêmico de SI - UFOPA</p>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.9.3/tsparticles.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.0/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+    
     <script type="module" src="./js/script.js"></script>
-    <script src="./js/particles-config.js"></script>
 </body>
 </html>
