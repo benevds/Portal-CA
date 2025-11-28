@@ -1,0 +1,272 @@
+/* =========================================
+   ESTILOS PAINEL ADMINISTRATIVO
+   ========================================= */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Courier New', monospace;
+    background-color: #0a0a0a;
+    color: #ffffff;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background-color: rgba(10, 10, 10, 0.9);
+    color: #ffffff;
+    padding: 20px;
+    position: fixed;
+    height: 100%;
+    left: 0;
+    top: 0;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+    border-right: 2px solid #39ff14;
+    z-index: 1000;
+}
+.sidebar h2 {
+    margin-bottom: 30px;
+    font-size: 1.5em;
+    color: #39ff14;
+    text-align: center;
+    border-bottom: 1px solid #39ff14;
+    padding-bottom: 10px;
+}
+.sidebar ul { list-style: none; }
+.sidebar ul li { margin-bottom: 15px; }
+.sidebar ul li a {
+    color: #ffffff;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+.sidebar ul li a:hover, .sidebar ul li a.active {
+    background-color: rgba(57, 255, 20, 0.2);
+    box-shadow: 0 0 10px #39ff14;
+}
+.sidebar .logout {
+    margin-top: 30px;
+    background-color: #ff0000;
+    color: #ffffff;
+    display: block; padding: 10px; border-radius: 5px; text-align: center; text-decoration: none;
+}
+.sidebar .logout:hover {
+    background-color: #cc0000;
+    box-shadow: 0 0 10px #ff0000;
+}
+
+/* Menu Hamburger */
+.hamburger {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1100;
+    background-color: #39ff14;
+    color: #ffffff;
+    border: 1px solid #39ff14;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: box-shadow 0.3s;
+}
+.hamburger span {
+    display: block; width: 25px; height: 3px; background-color: #ffffff; margin: 5px 0;
+}
+
+/* Área Principal */
+.main-content {
+    flex: 1;
+    margin-left: 250px;
+    padding: 30px;
+    transition: margin-left 0.3s ease;
+    background-color: #0a0a0a;
+    overflow-y: auto;
+    height: 100vh;
+}
+.main-content h1 { margin-bottom: 20px; font-size: 2em; color: #39ff14; }
+
+.header-content {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+}
+
+.section { display: none; }
+.section.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.add-new-btn {
+    background-color: #39ff14;
+    color: #000000;
+    border: 1px solid #39ff14;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: box-shadow 0.3s;
+    font-weight: bold;
+}
+.add-new-btn:hover { box-shadow: 0 0 10px #39ff14; }
+
+/* Tabelas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #1a1a1a;
+    border: 1px solid #39ff14;
+    box-shadow: 0 0 10px #39ff14;
+    margin-top: 10px;
+}
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #39ff14;
+    color: #ffffff;
+}
+table th { background-color: #0a0a0a; color: #39ff14; }
+.actions button {
+    margin-right: 10px;
+    padding: 5px 10px;
+    border: 1px solid #39ff14;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: box-shadow 0.3s;
+}
+.edit-btn { background-color: #39ff14; color: #000000; }
+.delete-btn { background-color: #ff0000; color: #ffffff; border-color: #ff0000; }
+
+/* Denúncias Específico */
+#lista-denuncias-admin table { border: 2px solid #ff0000; box-shadow: 0 0 10px #ff0000; }
+#lista-denuncias-admin th, #lista-denuncias-admin td { border-bottom: 1px solid #ff0000; }
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(10, 10, 10, 0.8);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(3px);
+}
+.modal-content {
+    background-color: #0a0a0a;
+    padding: 30px;
+    border-radius: 5px;
+    border: 1px solid #39ff14;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 0 20px #39ff14;
+}
+.modal-content h2 { margin-bottom: 20px; color: #39ff14; }
+.modal-content label { display: block; margin-bottom: 5px; color: #ffffff; }
+.modal-content input, .modal-content textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #39ff14;
+    border-radius: 3px;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    font-family: 'Courier New', monospace;
+}
+.save-btn {
+    background-color: #39ff14; color: #000000; padding: 10px 20px; border: none; cursor: pointer; font-weight: bold; margin-right: 10px;
+}
+.close-btn {
+    background-color: #1a1a1a; color: #ffffff; padding: 10px 20px; border: 1px solid #fff; cursor: pointer;
+}
+
+/* =========================================
+   7. RESPONSIVIDADE (MOBILE) - CORRIGIDO
+   ========================================= */
+@media (max-width: 768px) {
+    
+    /* --- 1. AJUSTES DO MENU HAMBURGUER --- */
+    
+    /* Remove o roxo e deixa transparente */
+    .hamburger {
+        display: block;
+        background-color: transparent; /* Sem fundo roxo */
+        border: 2px solid #39ff14; /* Borda neon opcional */
+        top: 15px;
+        left: 15px;
+        z-index: 1100; /* Fica abaixo da sidebar quando ela abrir */
+    }
+    
+    /* A Sidebar vai cobrir tudo quando abrir */
+    .sidebar {
+        transform: translateX(-100%);
+        width: 85%; /* Ocupa quase toda a tela */
+        max-width: 300px;
+        z-index: 2000; /* Fica ACIMA do botão hamburguer */
+        box-shadow: 5px 0 15px rgba(0,0,0,0.8);
+    }
+    
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    /* Botão X para fechar a sidebar (dentro dela) */
+    .close-sidebar-btn {
+        display: block; /* Visível só no mobile */
+        background: transparent;
+        border: none;
+        color: #ff0000; /* X vermelho */
+        font-size: 1.5rem;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        cursor: pointer;
+    }
+
+    /* Ajuste do conteúdo para não ficar escondido */
+    .main-content { 
+        margin-left: 0; 
+        padding: 80px 20px 20px 20px;
+    }
+
+    /* --- 2. CORREÇÃO DO TEXTO VAZANDO (TABELA -> CARD) --- */
+    
+    table, thead, tbody, th, td, tr { display: block; width: 100%; }
+    thead tr { position: absolute; top: -9999px; left: -9999px; }
+
+    /* O Card em si */
+    tr { 
+        background-color: rgba(20, 20, 20, 0.8);
+        border: 1px solid #39ff14; 
+        border-radius: 8px;
+        margin-bottom: 20px; 
+        padding: 15px;
+        box-sizing: border-box; /* Garante que o padding não estoure a largura */
+        overflow: hidden; /* Corta qualquer coisa que teime em vazar */
+    }
+
+    /* O Texto dentro do card */
+    td { 
+        border: none; 
+        border-bottom: 1px solid #333; 
+        padding: 10px 0;
+        color: #ddd;
+        
+        /* A SOLUÇÃO AGRESSIVA PARA TEXTO LONGO */
+        word-break: break-all; /* Quebra no meio da palavra se precisar */
+        white-space: normal;
+    }
+
+    td:last-child { border-bottom: none; }
+
+    .actions { display: flex; gap: 10px; margin-top: 10px; }
+    .actions button { flex: 1; padding: 10px; }
+}
+
+/* Esconde o botão de fechar no Desktop */
+@media (min-width: 769px) {
+    .close-sidebar-btn { display: none; }
+}

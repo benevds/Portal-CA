@@ -1,0 +1,123 @@
+/* =========================================
+   ESTILOS DA PÁGINA DE LOGIN (Glassmorphism)
+   ========================================= */
+
+/* Garante que o container ocupe a altura toda para centralizar */
+.portal-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; /* Altura mínima da área visual */
+    width: 100%;
+    position: relative;
+    z-index: 10; /* Fica acima das partículas */
+    padding: 20px;
+}
+
+#login-form {
+    /* O SEGREDO DO VIDRO: Fundo preto com muita transparência */
+    background: rgba(0, 0, 0, 0.4); 
+    
+    /* O DESFOQUE: Faz o efeito de vidro fosco */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px); /* Para Safari */
+    
+    /* Borda sutil neon */
+    border: 1px solid rgba(57, 255, 20, 0.3);
+    
+    padding: 3rem 2.5rem;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 420px;
+    
+    /* Brilho externo suave */
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.8), 
+                0 0 15px rgba(57, 255, 20, 0.1);
+    
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s;
+}
+
+/* Efeito ao passar o mouse no card de login */
+#login-form:hover {
+    transform: translateY(-5px);
+    border-color: rgba(57, 255, 20, 0.8);
+    box-shadow: 0 0 50px rgba(57, 255, 20, 0.15);
+}
+
+#login-form h2 {
+    text-align: center;
+    color: #39ff14;
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(57, 255, 20, 0.3);
+    text-transform: uppercase;
+}
+
+/* Inputs estilizados */
+.form-group { margin-bottom: 1.5rem; }
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #ccc;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    
+    /* Input transparente */
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #333;
+    
+    color: #fff;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.form-group input:focus {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: #39ff14;
+    box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
+    outline: none;
+}
+
+/* Botão de Entrar */
+#login-form button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 1rem;
+    
+    background: linear-gradient(45deg, #2dbd0f, #39ff14);
+    color: #000;
+    
+    font-weight: bold;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(57, 255, 20, 0.3);
+}
+
+#login-form button:hover {
+    transform: scale(1.02);
+    background: #39ff14;
+    box-shadow: 0 0 25px rgba(57, 255, 20, 0.6);
+}
+
+/* Mensagem de Erro */
+#error-message {
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 15px;
+    min-height: 20px; /* Para não pular a tela quando aparecer erro */
+}

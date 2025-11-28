@@ -1,391 +1,288 @@
-// Importa a conexão PRONTA do nosso arquivo central (ESSENCIAL!)
 import { _supabase } from './supabaseClient.js';
 
-// Variável para guardar o ID da NOTÍCIA que estamos editando
-let currentEditingId = null;
-
-// --- PASSO 1: VERIFICAÇÃO DE SEGURANÇA ---
 document.addEventListener('DOMContentLoaded', async () => {
+    // 1. Verificação de Login
     const { data: { session } } = await _supabase.auth.getSession();
-
     if (!session) {
-        alert('Acesso negado. Faça o login primeiro.');
         window.location.href = 'login.html';
         return;
     }
 
-    console.log('Usuário logado:', session.user.email);
-    
-    // Carrega TODAS as seções
-    carregarNoticiasAdmin();
-    carregarEventosAdmin();
-    carregarDocumentosAdmin();
-    carregarDenunciasAdmin();
-    carregarEquipeAdmin(); 
-
-    // Liga a mágica das Abas
-    setupTabs();
-
-    // A MÁGICA "ALTO NÍVEL": LIGA O EDITOR DE TEXTO
+    // 2. Inicializa TinyMCE (Editor de Texto)
     tinymce.init({
-        selector: 'textarea#resumo', // <== ACHA O SEU CAMPO DE RESUMO DE NOTÍCIAS
-        skin: "oxide-dark", // <== SKIN "TECH" PARA COMBINAR COM SEU SITE
+        selector: '#descricao',
+        skin: "oxide-dark",
         content_css: "dark",
-        plugins: 'lists link autoresize',
-        toolbar: 'undo redo | blocks | bold italic | alignleft aligncenter alignright | bullist numlist | link',
-        autoresize_bottom_margin: 20,
-        menubar: false,
+        height: 200,
+        menubar: false
     });
-});
 
+    // 3. Carrega Dados Iniciais
+    carregarNoticias();
+    carregarEventos();
+    carregarDocumentos();
+    carregarDenuncias();
+    carregarEquipe();
 
-// --- PASSO 2: FUNCIONALIDADE DE LOGOUT ---
-const btnLogout = document.getElementById('btn-logout');
-btnLogout.addEventListener('click', async () => {
-    const { error } = await _supabase.auth.signOut();
-    if (error) {
-        console.error('Erro ao sair:', error.message);
-    } else {
-        alert('Você saiu da sua conta.');
-        window.location.href = 'login.html';
+// --- LÓGICA DE UI (INTERFACE) ---
+    
+    const hamburger = document.getElementById('hamburger');
+    const sidebar = document.getElementById('sidebar');
+    const closeSidebarBtn = document.getElementById('close-sidebar-btn'); // Novo botão
+    
+    // Abrir menu
+    hamburger.addEventListener('click', () => {
+        sidebar.classList.add('open');
+    });
+
+    // Fechar menu (Botão X)
+    if(closeSidebarBtn) {
+        closeSidebarBtn.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+        });
     }
-});
 
-// --- PASSO 3: MÁGICA DAS ABAS DO DASHBOARD ---
-function setupTabs() {
-    const navLinks = document.querySelectorAll('.sidebar-nav .nav-link');
-    const tabPanes = document.querySelectorAll('.admin-content .tab-pane');
+    // Fechar ao clicar fora (Opcional, mas bom para UX)
+    document.addEventListener('click', (e) => {
+        if (!sidebar.contains(e.target) && !hamburger.contains(e.target) && sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open');
+        }
+    });
 
-    navLinks.forEach(link => {
-        if (link.id === 'btn-logout') return;
-        link.addEventListener('click', (event) => {
-            event.preventDefault(); 
-            const tabId = link.getAttribute('data-tab');
-            tabPanes.forEach(pane => pane.classList.remove('active'));
-            navLinks.forEach(nav => nav.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            link.classList.add('active');
+    // Navegação entre Seções (Abas) e troca de cor do botão
+    const links = document.querySelectorAll('.nav-link'); // Usei a classe nova que pus no HTML
+    const sections = document.querySelectorAll('.section');
+    const sectionTitle = document.getElementById('section-title');
+    const addNewBtn = document.getElementById('add-new-btn');
+
+    links.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            // 1. Remove 'active' de TODOS os links
+            links.forEach(l => l.classList.remove('active'));
+            
+            // 2. Adiciona 'active' SÓ no clicado
+            e.target.closest('a').classList.add('active');
+
+            const sectionName = e.target.closest('a').getAttribute('data-section');
+            
+            // 3. Troca a seção visível
+            sections.forEach(sec => sec.classList.remove('active'));
+            const activeSection = document.getElementById(sectionName);
+            if(activeSection) activeSection.classList.add('active');
+            
+            // 4. Atualiza Título
+            if(sectionTitle) sectionTitle.textContent = sectionName.charAt(0).toUpperCase() + sectionName.slice(1);
+            
+            // 5. Lógica do botão "Novo"
+            if(sectionName === 'denuncias' || sectionName === 'equipe') {
+                if(addNewBtn) addNewBtn.style.display = 'none';
+            } else {
+                if(addNewBtn) {
+                    addNewBtn.style.display = 'block';
+                    addNewBtn.setAttribute('data-current-section', sectionName);
+                }
+            }
+
+            // 6. Fecha o menu sidebar se estiver no celular
+            if (window.innerWidth <= 768) {
+                sidebar.classList.remove('open');
+            }
         });
     });
-}
 
+    // --- LÓGICA DO MODAL ---
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modal-title');
+    const editForm = document.getElementById('edit-form');
+    const closeModal = document.getElementById('close-modal');
 
-/* =============================================
-   =========== LÓGICA DO CRUD DE NOTÍCIAS ========
-   ============================================= */
-
-// --- CADASTRAR/ATUALIZAR NOTÍCIA (CORRIGIDO por você) ---
-const formNoticia = document.getElementById('form-nova-noticia');
-const successMessage = document.getElementById('success-message');
-
-formNoticia.addEventListener('submit', async (event) => {
-    event.preventDefault(); 
-
-    // Pega os valores do formulário
-    const titulo = document.getElementById('titulo').value;
-    const data = document.getElementById('data').value;
-    // O MAIS IMPORTANTE: Pega o resumo do editor TinyMCE
-    const editorInstance = tinymce.get('resumo');
-    const resumo = editorInstance ? editorInstance.getContent() : document.getElementById('resumo').value; // <== A CHECAGEM DE SEGURANÇA
-    
-    successMessage.textContent = ''; // Limpa mensagens
-
-    try {
-        let error;
-        if (currentEditingId) {
-            // ATUALIZANDO
-            const { error: updateError } = await _supabase
-                .from('noticias')
-                .update({ titulo: titulo, data: data, resumo: resumo })
-                .match({ id: currentEditingId });
-            error = updateError;
-        
-        } else {
-            // INSERINDO
-            const { error: insertError } = await _supabase
-                .from('noticias')
-                .insert([{ titulo: titulo, data: data, resumo: resumo }]);
-            error = insertError;
-        }
-
-        if (error) throw error; 
-
-        // Se deu certo: Reseta o estado
-        successMessage.textContent = 'Notícia salva com sucesso!';
-        formNoticia.reset(); 
-        
-        // Limpa o editor TinyMCE
-        if (editorInstance) {
-            editorInstance.setContent(''); 
-        }
-        
-        currentEditingId = null; 
-        carregarNoticiasAdmin(); 
-
-    } catch (error) {
-        console.error('Erro ao salvar notícia:', error.message);
-        alert('Erro ao salvar: ' + error.message);
-    }
-});
-
-// --- CARREGAR NOTÍCIAS (Função normal) ---
-async function carregarNoticiasAdmin() {
-    const listaAdmin = document.getElementById('lista-noticias-admin');
-    listaAdmin.innerHTML = '<p>Carregando notícias...</p>';
-    const { data: noticias, error } = await _supabase.from('noticias').select('*').order('data', { ascending: false });
-    if (error) { listaAdmin.innerHTML = '<p>Erro ao carregar lista.</p>'; return; }
-    listaAdmin.innerHTML = ''; 
-    noticias.forEach(noticia => {
-        const item = document.createElement('div');
-        item.className = 'admin-item'; 
-        item.innerHTML = `<strong>${noticia.titulo}</strong> (${formatarData(noticia.data)})<div><button class="btn-editar" data-id="${noticia.id}">Editar</button><button class="btn-excluir" data-id="${noticia.id}">Excluir</button></div>`;
-        listaAdmin.appendChild(item);
+    // Botão "Adicionar Novo"
+    addNewBtn.addEventListener('click', () => {
+        const section = addNewBtn.getAttribute('data-current-section') || 'noticias';
+        abrirModal(section);
     });
-}
 
-// --- EDITAR/EXCLUIR NOTÍCIA (CORRIGIDO por mim) ---
-const listaAdmin = document.getElementById('lista-noticias-admin');
-listaAdmin.addEventListener('click', async (event) => {
-    
-    // 1. Lógica de EXCLUIR (Notícia)
-    if (event.target.classList.contains('btn-excluir')) {
-        if (confirm('Tem certeza que quer excluir esta notícia?')) {
-            const idParaExcluir = event.target.dataset.id;
-            try {
-                const { error } = await _supabase.from('noticias').delete().match({ id: idParaExcluir });
-                if (error) throw error;
-                carregarNoticiasAdmin(); 
-            } catch (error) { alert('Erro ao excluir: ' + error.message); }
-        }
-    }
+    // Botão Fechar Modal
+    closeModal.addEventListener('click', () => modal.style.display = 'none');
 
-    // 2. Lógica de EDITAR (Notícia) - CORRIGIDA
-    if (event.target.classList.contains('btn-editar')) {
-        const idParaEditar = event.target.dataset.id;
-        try {
-            const { data: noticia, error } = await _supabase.from('noticias').select('*').match({ id: idParaEditar }).single(); 
-            if (error) throw error;
+    // Logout
+    document.getElementById('btn-logout').addEventListener('click', async () => {
+        await _supabase.auth.signOut();
+        window.location.href = 'login.html';
+    });
 
-            // --- CORREÇÃO "BABADA" AQUI ---
-            const editorInstance = tinymce.get('resumo');
-            document.getElementById('titulo').value = noticia.titulo;
-            document.getElementById('data').value = noticia.data;
-            
-            // CHECAGEM DE SEGURANÇA
-            if (editorInstance) {
-                editorInstance.setContent(noticia.resumo || '');
-            } else {
-                document.getElementById('resumo').value = noticia.resumo || '';
+    // --- SALVAR DADOS (SUBMIT) ---
+    editForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const section = document.getElementById('current-section').value;
+        const id = document.getElementById('edit-id').value;
+        
+        const titulo = document.getElementById('titulo').value;
+        
+        let payload = { titulo };
+
+        // Lógica específica por tipo
+        if (section === 'noticias') {
+            payload.data = document.getElementById('data').value;
+            payload.resumo = tinymce.get('descricao').getContent();
+        } else if (section === 'eventos') {
+            payload.data = document.getElementById('data').value;
+            payload.local = document.getElementById('local').value;
+        } else if (section === 'documentos') {
+            payload.descricao = document.getElementById('descricao').value; // Aqui é texto simples
+            // Se for novo e tiver arquivo
+            if (!id) {
+                const fileInput = document.getElementById('arquivo');
+                if(fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const path = `public/${Date.now()}_${file.name}`;
+                    await _supabase.storage.from('documentos').upload(path, file);
+                    const { data } = _supabase.storage.from('documentos').getPublicUrl(path);
+                    payload.caminho_storage = path;
+                    payload.url_publica = data.publicUrl;
+                }
             }
-            // --- FIM DA CORREÇÃO ---
-            
-            currentEditingId = noticia.id;
-            successMessage.textContent = `Editando notícia: "${noticia.titulo}"`;
-            window.scrollTo(0, 0); 
-        } catch (error) { 
-            console.error('Erro ao carregar dados para edição:', error);
-            alert('Erro ao carregar dados para edição: ' + error.message); 
         }
-    }
-});
 
-
-/* =============================================
-   =========== LÓGICA DO CRUD DE EVENTOS =========
-   ============================================= */
-// (O seu código de Eventos - sem mudanças)
-let currentEventEditingId = null;
-const formEvento = document.getElementById('form-novo-evento');
-const successMessageEvento = document.getElementById('evento-success-message');
-const listaAdminEventos = document.getElementById('lista-eventos-admin');
-async function carregarEventosAdmin() {
-    listaAdminEventos.innerHTML = '<p>Carregando eventos...</p>';
-    const { data: eventos, error } = await _supabase.from('eventos').select('*').order('data', { ascending: false });
-    if (error) { listaAdminEventos.innerHTML = '<p>Erro ao carregar lista.</p>'; return; }
-    listaAdminEventos.innerHTML = ''; 
-    eventos.forEach(evento => {
-        const item = document.createElement('div');
-        item.className = 'admin-item'; 
-        item.innerHTML = `<strong>${evento.titulo}</strong> (${formatarData(evento.data)})<div><button class="btn-editar-evento" data-id="${evento.id}">Editar</button><button class="btn-excluir-evento" data-id="${evento.id}">Excluir</button></div>`;
-        listaAdminEventos.appendChild(item);
-    });
-}
-formEvento.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const titulo = document.getElementById('evento-titulo').value;
-    const data = document.getElementById('evento-data').value;
-    const local = document.getElementById('evento-local').value;
-    successMessageEvento.textContent = '';
-    try {
-        let error;
-        if (currentEventEditingId) {
-            const { error: updateError } = await _supabase.from('eventos').update({ titulo: titulo, data: data, local: local }).match({ id: currentEventEditingId });
-            error = updateError;
-        } else {
-            const { error: insertError } = await _supabase.from('eventos').insert([{ titulo: titulo, data: data, local: local }]);
-            error = insertError;
-        }
-        if (error) throw error; 
-        successMessageEvento.textContent = 'Evento salvo com sucesso!';
-        formEvento.reset(); 
-        currentEventEditingId = null; 
-        carregarEventosAdmin(); 
-    } catch (error) { alert('Erro ao salvar evento: ' + error.message); }
-});
-listaAdminEventos.addEventListener('click', async (event) => {
-    if (event.target.classList.contains('btn-excluir-evento')) {
-        if (confirm('Tem certeza que quer excluir este evento?')) {
-            const idParaExcluir = event.target.dataset.id;
-            try {
-                const { error } = await _supabase.from('eventos').delete().match({ id: idParaExcluir });
-                if (error) throw error;
-                carregarEventosAdmin(); 
-            } catch (error) { alert('Erro ao excluir evento: ' + error.message); }
-        }
-    }
-    if (event.target.classList.contains('btn-editar-evento')) {
-        const idParaEditar = event.target.dataset.id;
         try {
-            const { data: evento, error } = await _supabase.from('eventos').select('*').match({ id: idParaEditar }).single(); 
-            if (error) throw error;
-            document.getElementById('evento-titulo').value = evento.titulo;
-            document.getElementById('evento-data').value = evento.data;
-            document.getElementById('evento-local').value = evento.local;
-            currentEventEditingId = evento.id;
-            successMessageEvento.textContent = `Editando evento: "${evento.titulo}"`;
-            window.scrollTo(0, document.getElementById('admin-eventos').offsetTop); 
-        } catch (error) { alert('Erro ao carregar evento para edição: ' + error.message); }
-    }
-});
-
-
-/* =============================================
-   =========== LÓGICA DO CRUD DE DOCUMENTOS ======
-   ============================================= */
-// (O seu código de Documentos - sem mudanças)
-const formDocumento = document.getElementById('form-novo-documento');
-const successMessageDoc = document.getElementById('doc-success-message');
-const uploadStatus = document.getElementById('doc-upload-status');
-const listaAdminDocumentos = document.getElementById('lista-documentos-admin');
-async function carregarDocumentosAdmin() {
-    listaAdminDocumentos.innerHTML = '<p>Carregando documentos...</p>';
-    const { data: documentos, error } = await _supabase.from('documentos').select('*').order('created_at', { ascending: false });
-    if (error) { listaAdminDocumentos.innerHTML = '<p>Erro ao carregar lista.</p>'; return; }
-    listaAdminDocumentos.innerHTML = ''; 
-    documentos.forEach(doc => {
-        const item = document.createElement('div');
-        item.className = 'admin-item'; 
-        item.innerHTML = `<div><strong>${doc.titulo}</strong><br><small>${doc.descricao || 'Sem descrição'}</small></div><div><button class="btn-excluir-doc" data-id="${doc.id}" data-path="${doc.caminho_storage}">Excluir</button></div>`;
-        listaAdminDocumentos.appendChild(item);
+            if (id) {
+                await _supabase.from(section).update(payload).match({ id });
+            } else {
+                await _supabase.from(section).insert([payload]);
+            }
+            
+            alert('Salvo com sucesso!');
+            modal.style.display = 'none';
+            location.reload(); // Recarrega para ver mudanças
+        } catch (error) {
+            alert('Erro: ' + error.message);
+        }
     });
+});
+
+// --- FUNÇÕES DE DADOS ---
+
+async function carregarNoticias() {
+    const tbody = document.getElementById('tbody-noticias');
+    const { data } = await _supabase.from('noticias').select('*').order('data', { ascending: false });
+    tbody.innerHTML = data.map(n => `
+        <tr>
+            <td>${n.id}</td><td>${n.titulo}</td><td>${formatarData(n.data)}</td>
+            <td class="actions">
+                <button class="edit-btn" onclick='window.preencherModal("noticias", ${JSON.stringify(n)})'>Editar</button>
+                <button class="delete-btn" onclick='window.deletarItem("noticias", ${n.id})'>Excluir</button>
+            </td>
+        </tr>`).join('');
 }
-formDocumento.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const titulo = document.getElementById('doc-titulo').value;
-    const descricao = document.getElementById('doc-descricao').value;
-    const fileInput = document.getElementById('doc-arquivo');
-    const file = fileInput.files[0]; 
-    if (!file) { alert('Por favor, selecione um arquivo para fazer upload.'); return; }
-    const filePath = `public/${Date.now()}_${file.name}`;
-    successMessageDoc.textContent = '';
-    uploadStatus.textContent = 'Enviando arquivo...';
-    try {
-        const { data: uploadData, error: uploadError } = await _supabase.storage.from('documentos').upload(filePath, file);
-        if (uploadError) throw uploadError;
-        uploadStatus.textContent = 'Arquivo enviado! Obtendo URL...';
-        const { data: urlData } = _supabase.storage.from('documentos').getPublicUrl(filePath);
-        const publicUrl = urlData.publicUrl;
-        const { error: insertError } = await _supabase.from('documentos').insert({ titulo: titulo, descricao: descricao, caminho_storage: filePath, url_publica: publicUrl });
-        if (insertError) throw insertError;
-        successMessageDoc.textContent = 'Documento salvo com sucesso!';
-        uploadStatus.textContent = '';
-        formDocumento.reset(); 
-        carregarDocumentosAdmin(); 
-    } catch (error) {
-        uploadStatus.textContent = '';
-        alert('Erro ao salvar documento: ' + error.message);
-    }
-});
-listaAdminDocumentos.addEventListener('click', async (event) => {
-    if (event.target.classList.contains('btn-excluir-doc')) {
-        if (confirm('Tem certeza que quer excluir este documento?')) {
-            const idParaExcluir = event.target.dataset.id;
-            const caminhoParaExcluir = event.target.dataset.path;
-            try {
-                const { error: storageError } = await _supabase.storage.from('documentos').remove([caminhoParaExcluir]);
-                if (storageError) throw storageError;
-                const { error: dbError } = await _supabase.from('documentos').delete().match({ id: idParaExcluir });
-                if (dbError) throw dbError;
-                alert('Documento excluído com sucesso!');
-                carregarDocumentosAdmin(); 
-            } catch (error) { alert('Erro ao excluir documento: ' + error.message); }
-        }
-    }
-});
 
-
-/* =============================================
-   =========== LÓGICA DE VER DENÚNCIAS =========
-   ============================================= */
-// (O seu código de Denúncias - sem mudanças)
-const listaAdminDenuncias = document.getElementById('lista-denuncias-admin');
-async function carregarDenunciasAdmin() {
-    listaAdminDenuncias.innerHTML = '<p>Carregando denúncias...</p>';
-    const { data: denuncias, error } = await _supabase.from('denuncias').select('*').order('created_at', { ascending: false });
-    if (error) { listaAdminDenuncias.innerHTML = '<p>Erro ao carregar lista. Verifique as permissões (RLS).</p>'; return; }
-    if (denuncias.length === 0) { listaAdminDenuncias.innerHTML = '<p>Nenhuma denúncia na caixa de entrada.</p>'; return; }
-    listaAdminDenuncias.innerHTML = ''; 
-    denuncias.forEach(denuncia => {
-        const item = document.createElement('div');
-        item.className = 'admin-item'; 
-        item.innerHTML = `<div><div style="display: flex; justify-content: space-between; align-items: center;"><strong style="font-size: 1.2rem; color: #e74c3c;">Tipo: ${denuncia.tipo}</strong><span style="font-size: 0.9rem; color: #888;">Enviado em: ${dataEnvio}</span></div><p style="margin-top: 10px; white-space: pre-wrap;">${denuncia.descricao}</p></div><div style="text-align: right; margin-top: 10px;"><button class="btn-excluir-denuncia" data-id="${denuncia.id}">Marcar como Resolvido (Excluir)</button></div>`;
-        listaAdminDenuncias.appendChild(item);
-    });
+async function carregarEventos() {
+    const tbody = document.getElementById('tbody-eventos');
+    const { data } = await _supabase.from('eventos').select('*');
+    tbody.innerHTML = data.map(e => `
+        <tr>
+            <td>${e.titulo}</td><td>${formatarData(e.data)}</td><td>${e.local || '-'}</td>
+            <td class="actions">
+                <button class="edit-btn" onclick='window.preencherModal("eventos", ${JSON.stringify(e)})'>Editar</button>
+                <button class="delete-btn" onclick='window.deletarItem("eventos", ${e.id})'>Excluir</button>
+            </td>
+        </tr>`).join('');
 }
-listaAdminDenuncias.addEventListener('click', async (event) => {
-    if (event.target.classList.contains('btn-excluir-denuncia')) {
-        if (confirm('Tem certeza que quer excluir esta denúncia? Ela será apagada permanentemente.')) {
-            const idParaExcluir = event.target.dataset.id;
-            try {
-                const { error } = await _supabase.from('denuncias').delete().match({ id: idParaExcluir });
-                if (error) throw error;
-                alert('Denúncia marcada como resolvida (excluída).');
-                carregarDenunciasAdmin(); 
-            } catch (error) { alert('Erro ao excluir denúncia: ' + error.message); }
-        }
-    }
-});
 
+async function carregarDocumentos() {
+    const tbody = document.getElementById('tbody-documentos');
+    const { data } = await _supabase.from('documentos').select('*');
+    tbody.innerHTML = data.map(d => `
+        <tr>
+            <td>${d.titulo}</td><td>${d.descricao || '-'}</td><td><a href="${d.url_publica}" target="_blank">Ver</a></td>
+            <td class="actions">
+                <button class="edit-btn" onclick='window.preencherModal("documentos", ${JSON.stringify(d)})'>Editar</button>
+                <button class="delete-btn" onclick='window.deletarItem("documentos", ${d.id})'>Excluir</button>
+            </td>
+        </tr>`).join('');
+}
 
-/* =============================================
-   =========== LÓGICA DA NOVA ABA "EQUIPE" =======
-   ============================================= */
-// (O seu código da Equipe - sem mudanças)
-async function carregarEquipeAdmin() {
-    const listaEquipe = document.getElementById('lista-equipe-admin');
-    listaEquipe.innerHTML = '<p>Carregando membros...</p>';
-    try {
-        const { data: { user } } = await _supabase.auth.getUser();
-        if (user) {
-            listaEquipe.innerHTML = `
-                <div class="admin-item">
-                    <strong>${user.email}</strong>
-                    <span style="color: var(--cor-acento); font-weight: 700;">(Super Admin)</span>
-                </div>
-            `;
-        } else {
-            throw new Error('Não foi possível buscar o usuário logado.');
-        }
-    } catch (error) {
-        console.error('Erro ao carregar equipe:', error.message);
-        listaEquipe.innerHTML = '<p>Erro ao carregar equipe.</p>';
+async function carregarDenuncias() {
+    const tbody = document.getElementById('tbody-denuncias');
+    const { data } = await _supabase.from('denuncias').select('*');
+    tbody.innerHTML = data.map(d => `
+        <tr>
+            <td>${d.tipo}</td><td>${d.descricao}</td><td>${formatarData(d.created_at)}</td>
+            <td class="actions">
+                <button class="delete-btn" onclick='window.deletarItem("denuncias", ${d.id})'>Excluir</button>
+            </td>
+        </tr>`).join('');
+}
+
+async function carregarEquipe() {
+    const div = document.getElementById('info-equipe');
+    const { data: { user } } = await _supabase.auth.getUser();
+    div.innerHTML = `<p style="padding:10px">Você está logado como: <strong>${user.email}</strong>. Adicione novos admins pelo painel do Supabase.</p>`;
+}
+
+// --- AUXILIARES GLOBAIS ---
+
+window.preencherModal = (section, dados) => {
+    const modal = document.getElementById('modal');
+    const form = document.getElementById('edit-form');
+    
+    // Configura campos visíveis
+    window.abrirModal(section); 
+    
+    document.getElementById('modal-title').innerText = 'Editar Item';
+    document.getElementById('edit-id').value = dados.id;
+    
+    document.getElementById('titulo').value = dados.titulo || '';
+    if(document.getElementById('data')) document.getElementById('data').value = dados.data || '';
+    if(document.getElementById('local')) document.getElementById('local').value = dados.local || '';
+    
+    // TinyMCE
+    if (section === 'noticias' && dados.resumo) {
+        tinymce.get('descricao').setContent(dados.resumo);
+    } else if (dados.descricao) {
+        // Se for documento (textarea normal)
+        document.getElementById('descricao').value = dados.descricao; 
     }
 }
 
+window.abrirModal = (section) => {
+    const modal = document.getElementById('modal');
+    const form = document.getElementById('edit-form');
+    form.reset();
+    if(tinymce.get('descricao')) tinymce.get('descricao').setContent('');
+    
+    document.getElementById('current-section').value = section;
+    document.getElementById('modal-title').innerText = 'Novo Item';
+    
+    // Mostra/Esconde campos baseado na seção
+    document.getElementById('container-data').style.display = (section === 'noticias' || section === 'eventos') ? 'block' : 'none';
+    document.getElementById('container-local').style.display = (section === 'eventos') ? 'block' : 'none';
+    document.getElementById('container-arquivo').style.display = (section === 'documentos') ? 'block' : 'none';
+    
+    // TinyMCE só aparece em Notícias
+    const editorContainer = document.querySelector('.tox-tinymce');
+    const textareaDesc = document.getElementById('descricao');
+    
+    if (section === 'noticias') {
+        if(editorContainer) editorContainer.style.display = 'block';
+        textareaDesc.style.display = 'none';
+    } else {
+        if(editorContainer) editorContainer.style.display = 'none';
+        textareaDesc.style.display = 'block';
+    }
 
-// --- Função helper de data (reutilizável) ---
+    modal.style.display = 'flex';
+}
+
+window.deletarItem = async (tabela, id) => {
+    if(confirm('Tem certeza?')) {
+        await _supabase.from(tabela).delete().match({ id });
+        location.reload();
+    }
+}
+
 function formatarData(dataISO) {
     if (!dataISO) return '';
-    const [ano, mes, dia] = dataISO.split('T')[0].split('-');
-    return `${dia}/${mes}/${ano}`;
+    return new Date(dataISO).toLocaleDateString('pt-BR');
 }
